@@ -35,6 +35,9 @@ Eine dynamische WebApp für Waldbaden-Kurse mit Fokus auf Kursmanagement, Teilne
 - **Datenbank:** Google Sheets (über Google Sheets API)
 - **Admin-Zugriff:** Passwortgeschützter Bereich (serverseitige Prüfung empfohlen)
 - **E-Mail-Automatisierung:** Google Apps Script (für Buchungsbestätigungen)
+- Google Sheets: 
+   - Bereitstellungs-ID: AKfycbwZlZ8qVcsr1Aa54_nQk8SuPj3swVB0MvpD1VVnk0w4zDxSjyif2MC9JgUEfa9GPCM8og
+   - Web-App URL: https://script.google.com/macros/s/AKfycbwZlZ8qVcsr1Aa54_nQk8SuPj3swVB0MvpD1VVnk0w4zDxSjyif2MC9JgUEfa9GPCM8og/exec
 
 ### Sicherheit & Recht
 - **Admin-Bereich:** Passwortschutz (Standard: "admin123")
