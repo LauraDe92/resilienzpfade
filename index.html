@@ -1,1 +1,1252 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resilienzpfade – Waldbaden mit Laura Demory</title>
+<meta name="description" content="Waldbaden in der Region Waiblingen – Gruppen- und Privatkurse mit zertifizierter Guide Laura Demory. Shinrin-Yoku für Stressabbau, Resilienz und innere Stärke.">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ───────────────────────────────────────────── */
+:root {
+  --forest:    #1c3d28;
+  --pine:      #2d5a3d;
+  --sage:      #6a9478;
+  --moss:      #a8c4b0;
+  --mist:      #d6e8dc;
+  --cream:     #f5ede0;
+  --parchment: #ebe2d2;
+  --bark:      #5c3d2e;
+  --gold:      #b5893a;
+  --gold-pale: #e8d5a8;
+  --text:      #1a2e1f;
+  --text-mid:  #4a6455;
+  --text-lt:   #7a9485;
+  --white:     #fdfaf5;
+  --fd:        'Cormorant Garamond', Georgia, serif;
+  --fb:        'DM Sans', system-ui, sans-serif;
+  --sh-sm:     0 2px 12px rgba(28,61,40,.08);
+  --sh-md:     0 8px 40px rgba(28,61,40,.14);
+  --sh-lg:     0 20px 60px rgba(28,61,40,.18);
+  --nav-h:     68px;
+}
 
+/* ── RESET ────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--cream);color:var(--text);font-weight:300;line-height:1.75;min-height:100vh}
+img{max-width:100%;display:block}
+a{color:inherit}
+button{cursor:pointer;font-family:var(--fb);border:none;background:none}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--cream)}
+::-webkit-scrollbar-thumb{background:var(--sage);border-radius:10px}
+
+/* ── NAV ──────────────────────────────────────────────── */
+#nav{position:fixed;top:0;left:0;right:0;z-index:999;height:var(--nav-h);transition:background .4s,box-shadow .4s}
+#nav.scrolled{background:rgba(28,61,40,.97);backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(255,255,255,.06)}
+#nav.on-hero{background:linear-gradient(to bottom,rgba(0,0,0,.35),transparent)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:100%;padding:0 1.5rem;max-width:1240px;margin:0 auto}
+.nav-logo{font-family:var(--fd);font-size:1.45rem;font-style:italic;font-weight:400;color:#fff;letter-spacing:.02em;cursor:pointer;line-height:1.1;user-select:none}
+.nav-logo small{display:block;font-family:var(--fb);font-style:normal;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;opacity:.6;font-weight:300;margin-top:1px}
+.nav-links{display:none;align-items:center;gap:.25rem;list-style:none}
+@media(min-width:820px){.nav-links{display:flex}}
+.nav-links a{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.82);text-decoration:none;padding:.5rem .7rem;border-radius:2px;transition:color .2s,background .2s;font-weight:400;cursor:pointer}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,.1)}
+.hamburger{display:flex;flex-direction:column;gap:5px;padding:6px;cursor:pointer}
+@media(min-width:820px){.hamburger{display:none}}
+.hamburger span{display:block;width:22px;height:1.5px;background:#fff;transition:transform .3s,opacity .3s;transform-origin:center}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4.5px,4.5px)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4.5px,-4.5px)}
+#mobile-menu{position:fixed;top:var(--nav-h);left:0;right:0;background:var(--forest);z-index:998;transform:translateY(-110%);transition:transform .38s cubic-bezier(.4,0,.2,1);padding:1rem 0 1.5rem;box-shadow:var(--sh-lg)}
+#mobile-menu.open{transform:translateY(0)}
+#mobile-menu a{display:block;padding:.7rem 2rem;color:rgba(255,255,255,.8);text-decoration:none;font-size:.85rem;letter-spacing:.14em;text-transform:uppercase;font-weight:300;transition:color .2s,padding-left .2s;cursor:pointer}
+#mobile-menu a:hover{color:#fff;padding-left:2.5rem}
+
+/* ── ROUTING ──────────────────────────────────────────── */
+.page{display:none;min-height:100vh}
+.page.active{display:block;animation:fadeIn .35s ease forwards}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── PAGE HEADER ──────────────────────────────────────── */
+.page-header{padding:calc(var(--nav-h) + 3rem) 1.5rem 3rem;background:var(--forest);color:#fff;text-align:center;position:relative;overflow:hidden}
+.page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 80%,rgba(45,90,61,.5) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(45,90,61,.3) 0%,transparent 50%)}
+.page-header>*{position:relative}
+.page-header .eyebrow{font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;color:var(--moss);margin-bottom:.75rem;font-weight:400}
+.page-header h2{font-family:var(--fd);font-size:clamp(2.2rem,6vw,3.8rem);font-weight:300;font-style:italic;line-height:1.1}
+
+/* ── CONTAINERS ───────────────────────────────────────── */
+.wrap{max-width:780px;margin:0 auto;padding:3.5rem 1.5rem}
+.wrap-wide{max-width:1160px;margin:0 auto;padding:3.5rem 1.5rem}
+
+/* ── TYPE HELPERS ─────────────────────────────────────── */
+.serif-title{font-family:var(--fd);font-weight:400;font-style:italic;color:var(--pine)}
+h3.serif-title{font-size:clamp(1.6rem,4vw,2.2rem);margin-bottom:.75rem}
+.eyebrow-sm{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--sage);font-weight:400;margin-bottom:.6rem}
+.rule{width:48px;height:1.5px;background:var(--gold);margin:1.5rem 0}
+.rule.center{margin-left:auto;margin-right:auto}
+p{color:var(--text-mid);margin-bottom:1.1rem}
+p:last-child{margin-bottom:0}
+
+/* ── BUTTONS ──────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 2rem;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;font-weight:500;text-decoration:none;transition:all .25s;font-family:var(--fb);border-radius:2px;cursor:pointer}
+.btn-primary{background:var(--pine);color:#fff;border:1.5px solid var(--pine)}
+.btn-primary:hover{background:var(--forest);border-color:var(--forest);transform:translateY(-1px);box-shadow:0 4px 20px rgba(28,61,40,.3)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-outline{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.5)}
+.btn-outline:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.8)}
+.btn-gold{background:var(--gold);color:#fff;border:1.5px solid var(--gold)}
+.btn-gold:hover{background:#9a7230;transform:translateY(-1px)}
+.btn-sm{padding:.55rem 1.2rem;font-size:.68rem}
+.btn-danger{background:#c0392b;color:#fff;border:1.5px solid #c0392b}
+.btn-danger:hover{background:#a93226}
+
+/* ── HERO ─────────────────────────────────────────────── */
+.hero{height:100svh;min-height:560px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:url('Header.png') center center/cover no-repeat;transform:scale(1.04);transition:transform 8s ease-out}
+.hero-bg.loaded{transform:scale(1)}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,28,16,.62) 0%,rgba(20,42,26,.3) 40%,rgba(10,28,16,.75) 100%)}
+.hero-content{position:relative;z-index:1;text-align:center;color:#fff;padding:0 1.5rem;max-width:720px}
+.hero-eyebrow{font-size:.65rem;letter-spacing:.35em;text-transform:uppercase;color:var(--moss);margin-bottom:1.25rem;font-weight:400;animation:heroIn 1.2s .1s cubic-bezier(.22,1,.36,1) both}
+.hero h1{font-family:var(--fd);font-size:clamp(3rem,9vw,6.5rem);font-weight:300;line-height:1.06;margin-bottom:1.25rem;text-shadow:0 2px 24px rgba(0,0,0,.25);animation:heroIn 1.2s .2s cubic-bezier(.22,1,.36,1) both}
+.hero h1 em{font-style:italic;font-weight:400;color:var(--gold-pale)}
+.hero-sub{font-size:1rem;opacity:.82;margin-bottom:2.2rem;font-weight:300;max-width:440px;margin-left:auto;margin-right:auto;animation:heroIn 1.2s .32s cubic-bezier(.22,1,.36,1) both}
+.hero-cta{display:flex;gap:.85rem;justify-content:center;flex-wrap:wrap;animation:heroIn 1.2s .44s cubic-bezier(.22,1,.36,1) both}
+@keyframes heroIn{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.4rem;color:rgba(255,255,255,.5);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;animation:scrollBounce 2.5s 1.5s infinite}
+.hero-scroll::after{content:'';display:block;width:1px;height:36px;background:linear-gradient(to bottom,rgba(255,255,255,.4),transparent)}
+@keyframes scrollBounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ── HOME FEATURES ────────────────────────────────────── */
+.features-section{background:var(--white);padding:5rem 1.5rem}
+.section-intro{text-align:center;max-width:560px;margin:0 auto 3.5rem}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5px;max-width:1160px;margin:0 auto;background:var(--parchment)}
+.feature-card{background:var(--white);padding:2.5rem 2rem;transition:background .25s}
+.feature-card:hover{background:var(--cream)}
+.feature-card .icon{font-size:1.8rem;margin-bottom:1.1rem;display:block}
+.feature-card h4{font-family:var(--fd);font-size:1.25rem;font-style:italic;color:var(--pine);margin-bottom:.5rem;font-weight:400}
+.feature-card p{font-size:.9rem}
+
+/* ── CTA BAND ─────────────────────────────────────────── */
+.cta-band{background:var(--forest);color:#fff;padding:5rem 1.5rem;text-align:center;position:relative;overflow:hidden}
+.cta-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(45,90,61,.6) 0%,transparent 65%),radial-gradient(ellipse at 70% 50%,rgba(45,90,61,.4) 0%,transparent 60%)}
+.cta-band>*{position:relative}
+.cta-band h3{font-family:var(--fd);font-size:clamp(2rem,5vw,3rem);font-weight:300;font-style:italic;margin-bottom:1rem}
+.cta-band p{color:rgba(255,255,255,.7);max-width:480px;margin:0 auto 2.2rem}
+
+/* ── PROSE ────────────────────────────────────────────── */
+.prose h3{font-family:var(--fd);font-size:1.7rem;font-style:italic;color:var(--pine);margin:2.5rem 0 .75rem;font-weight:400}
+.prose h3:first-child{margin-top:0}
+.prose ul,.prose ol{padding-left:1.5rem;color:var(--text-mid);margin-bottom:1rem}
+.prose li{margin-bottom:.35rem}
+.prose strong{color:var(--text);font-weight:500}
+
+/* ── INFO CARDS ───────────────────────────────────────── */
+.info-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--parchment);margin:2rem 0}
+.info-card{background:var(--white);padding:2rem 1.5rem}
+.info-card h4{font-family:var(--fd);font-size:1.15rem;font-style:italic;color:var(--pine);margin-bottom:.5rem;font-weight:400}
+.info-card p{font-size:.88rem}
+
+/* ── ABOUT ────────────────────────────────────────────── */
+.about-layout{display:grid;grid-template-columns:1fr;gap:3rem;align-items:start}
+@media(min-width:680px){.about-layout{grid-template-columns:220px 1fr}}
+.about-portrait{aspect-ratio:3/4;background:linear-gradient(135deg,var(--moss) 0%,var(--pine) 100%);display:flex;align-items:center;justify-content:center;font-size:5rem;position:relative;overflow:hidden}
+.about-portrait::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 60%,rgba(28,61,40,.4))}
+.qual-list{list-style:none;padding:0}
+.qual-list li{display:flex;align-items:flex-start;gap:.75rem;padding:.65rem 0;border-bottom:1px solid var(--parchment);font-size:.9rem;color:var(--text-mid)}
+.qual-list li::before{content:'✦';color:var(--gold);font-size:.6rem;margin-top:.35rem;flex-shrink:0}
+
+/* ── COURSES ──────────────────────────────────────────── */
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;margin-top:2.5rem}
+.course-card{background:var(--white);border:1px solid var(--parchment);overflow:hidden;transition:transform .3s,box-shadow .3s;display:flex;flex-direction:column}
+.course-card:hover{transform:translateY(-3px);box-shadow:var(--sh-md)}
+.course-card-top{background:var(--pine);padding:1.5rem;position:relative}
+.course-card-top::after{content:'';position:absolute;bottom:0;left:0;right:0;height:30px;background:var(--white);clip-path:ellipse(55% 100% at 50% 100%)}
+.course-card-top h4{font-family:var(--fd);font-size:1.35rem;font-style:italic;color:#fff;font-weight:400;margin-bottom:.25rem;padding-right:70px}
+.avail-badge{position:absolute;top:1.2rem;right:1.2rem;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .65rem;border-radius:20px;font-weight:500}
+.avail-ok{background:rgba(255,255,255,.2);color:#fff}
+.avail-few{background:#f39c12;color:#fff}
+.avail-full{background:#c0392b;color:#fff}
+.course-card-body{padding:1.8rem 1.5rem 1.5rem;flex:1;display:flex;flex-direction:column}
+.course-detail{display:flex;gap:.75rem;align-items:flex-start;padding:.45rem 0;border-bottom:1px solid var(--parchment);font-size:.88rem;color:var(--text-mid)}
+.course-detail:last-of-type{border-bottom:none}
+.course-detail .lbl{font-weight:500;color:var(--text);min-width:80px;font-size:.82rem;flex-shrink:0}
+.course-card-footer{padding:1rem 1.5rem 1.5rem;border-top:1px solid var(--parchment);margin-top:auto}
+
+/* ── FORMS ────────────────────────────────────────────── */
+.form-wrap{background:var(--white);padding:2.5rem}
+@media(max-width:600px){.form-wrap{padding:1.5rem}}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:560px){.form-row{grid-template-columns:1fr}}
+.field{margin-bottom:1.4rem}
+label{display:block;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--pine);margin-bottom:.45rem;font-weight:500}
+input,textarea,select{width:100%;padding:.8rem 1rem;border:1.5px solid var(--parchment);background:var(--cream);font-family:var(--fb);font-size:.95rem;font-weight:300;color:var(--text);border-radius:2px;outline:none;transition:border-color .2s,background .2s;appearance:none}
+input:focus,textarea:focus,select:focus{border-color:var(--sage);background:var(--white)}
+textarea{min-height:130px;resize:vertical}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%236a9478'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem}
+
+/* ── ALERTS ───────────────────────────────────────────── */
+.alert{padding:.9rem 1.2rem;border-radius:2px;font-size:.88rem;margin-bottom:1.2rem;border-left:3px solid}
+.alert-success{background:#e8f5e9;color:#2e7d32;border-color:#2e7d32}
+.alert-error{background:#ffebee;color:#c62828;border-color:#c62828}
+.alert-info{background:#e3f2fd;color:#1565c0;border-color:#1565c0}
+.alert-warn{background:#fff8e1;color:#e65100;border-color:#e65100}
+
+/* ── SPINNER ──────────────────────────────────────────── */
+.spinner{display:flex;align-items:center;justify-content:center;gap:.75rem;padding:3rem;color:var(--text-lt);font-size:.88rem}
+.spinner::before{content:'';width:18px;height:18px;border:2px solid var(--mist);border-top-color:var(--pine);border-radius:50%;animation:spin .75s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── GALLERY ──────────────────────────────────────────── */
+.gallery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:4px}
+@media(min-width:600px){.gallery-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:900px){.gallery-grid{grid-template-columns:repeat(4,1fr)}}
+.gallery-item{aspect-ratio:1;overflow:hidden;cursor:zoom-in;background:var(--parchment)}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .45s cubic-bezier(.25,.46,.45,.94)}
+.gallery-item:hover img{transform:scale(1.07)}
+#lightbox{position:fixed;inset:0;background:rgba(10,20,12,.92);z-index:9999;display:none;align-items:center;justify-content:center;padding:2rem}
+#lightbox.open{display:flex}
+#lightbox img{max-width:90vw;max-height:85vh;object-fit:contain;box-shadow:var(--sh-lg)}
+.lb-close{position:absolute;top:1.2rem;right:1.5rem;color:rgba(255,255,255,.7);font-size:1.8rem;line-height:1;cursor:pointer;transition:color .2s;background:none;border:none}
+.lb-close:hover{color:#fff}
+
+/* ── CONTACT ──────────────────────────────────────────── */
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--parchment);margin-top:2.5rem}
+.contact-item{background:var(--white);padding:2rem;display:flex;align-items:flex-start;gap:1rem}
+.contact-icon-wrap{width:44px;height:44px;background:var(--forest);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;border-radius:2px}
+.contact-item h5{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sage);margin-bottom:.35rem;font-weight:500}
+.contact-item p{font-size:.9rem;margin:0}
+.contact-item a{color:var(--pine);text-decoration:none}
+.contact-item a:hover{text-decoration:underline}
+
+/* ── ADMIN ────────────────────────────────────────────── */
+.admin-login-wrap{min-height:60vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.admin-login-box{background:var(--white);padding:3rem 2.5rem;max-width:380px;width:100%;border-top:3px solid var(--pine);box-shadow:var(--sh-md)}
+.admin-login-box h3{font-family:var(--fd);font-style:italic;font-weight:400;font-size:1.6rem;color:var(--pine);text-align:center;margin-bottom:2rem}
+#admin-panel{display:none}
+#admin-panel.visible{display:block}
+.admin-tabs{display:flex;gap:2px;background:var(--parchment);padding:2px;margin-bottom:2rem;border-radius:3px;flex-wrap:wrap}
+.admin-tab{padding:.6rem 1.2rem;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;color:var(--text-mid);background:transparent;border-radius:2px;transition:all .2s}
+.admin-tab.active,.admin-tab:hover{background:var(--white);color:var(--pine);box-shadow:var(--sh-sm)}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+.admin-form-section{background:var(--cream);padding:2rem;margin-bottom:2rem;border-left:3px solid var(--pine)}
+.admin-form-section h4{font-family:var(--fd);font-style:italic;font-size:1.25rem;color:var(--pine);margin-bottom:1.5rem;font-weight:400}
+.admin-list-item{background:var(--white);padding:1rem 1.25rem;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;gap:1rem;border:1px solid var(--parchment);border-radius:2px;flex-wrap:wrap}
+.admin-list-item-info h5{font-family:var(--fd);font-size:1.05rem;font-style:italic;color:var(--pine);font-weight:400}
+.admin-list-item-info small{font-size:.82rem;color:var(--text-lt)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:500px){.grid-2{grid-template-columns:1fr}}
+
+/* ── COOKIE ───────────────────────────────────────────── */
+#cookie-banner{position:fixed;bottom:0;left:0;right:0;background:rgba(28,61,40,.97);backdrop-filter:blur(10px);color:rgba(255,255,255,.8);padding:1.1rem 1.5rem;z-index:9997;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.82rem;transition:transform .4s}
+#cookie-banner.hidden{transform:translateY(110%)}
+#cookie-banner a{color:var(--moss);cursor:pointer}
+
+/* ── FOOTER ───────────────────────────────────────────── */
+.site-footer{background:var(--forest);color:rgba(255,255,255,.55);padding:2rem 1.5rem;font-size:.78rem;border-top:1px solid rgba(255,255,255,.06)}
+.footer-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.footer-links{display:flex;gap:1.5rem;flex-wrap:wrap}
+.footer-links a{color:rgba(255,255,255,.55);text-decoration:none;cursor:pointer;transition:color .2s;letter-spacing:.05em}
+.footer-links a:hover{color:#fff}
+
+/* ── EMPTY STATE ──────────────────────────────────────── */
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--text-lt)}
+.empty-state .empty-icon{font-size:3rem;margin-bottom:1rem}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     NAVIGATION
+     ══════════════════════════════════════════════════════ -->
+<nav id="nav" class="on-hero">
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="go('home')">
+      Resilienzpfade
+      <small>Waldbaden · Laura Demory</small>
+    </div>
+    <ul class="nav-links">
+      <li><a onclick="go('waldbaden')">Waldbaden</a></li>
+      <li><a onclick="go('about')">Über mich</a></li>
+      <li><a onclick="go('kurse')">Gruppenkurse</a></li>
+      <li><a onclick="go('privat')">Privatkurse</a></li>
+      <li><a onclick="go('galerie')">Galerie</a></li>
+      <li><a onclick="go('kontakt')">Kontakt</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<div id="mobile-menu">
+  <a onclick="go('home')">Startseite</a>
+  <a onclick="go('waldbaden')">Waldbaden</a>
+  <a onclick="go('about')">Über mich</a>
+  <a onclick="go('kurse')">Gruppenkurse</a>
+  <a onclick="go('privat')">Privatkurse</a>
+  <a onclick="go('galerie')">Galerie</a>
+  <a onclick="go('kontakt')">Kontakt</a>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     HOME
+     ══════════════════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <div class="hero">
+    <div class="hero-bg" id="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Resilienzpfade · Waiblingen</div>
+      <h1>Im Wald<br><em>zu sich finden</em></h1>
+      <p class="hero-sub">Waldbaden als Weg zur inneren Stille, Kraft und Heilung</p>
+      <div class="hero-cta">
+        <button class="btn btn-gold" onclick="go('kurse')">Kurse entdecken</button>
+        <button class="btn btn-outline" onclick="go('waldbaden')">Was ist Waldbaden?</button>
+      </div>
+    </div>
+    <div class="hero-scroll">Scroll</div>
+  </div>
+
+  <div class="features-section">
+    <div class="section-intro">
+      <div class="eyebrow-sm">Was dich erwartet</div>
+      <h3 class="serif-title">Der Wald als Heilungsraum</h3>
+      <div class="rule center"></div>
+      <p>Waldbaden – Shinrin-Yoku – ist mehr als ein Spaziergang. Es ist eine bewusste Einladung, zur Ruhe zu kommen, die Sinne zu öffnen und die heilende Kraft des Waldes tief in sich aufzunehmen.</p>
+    </div>
+    <div class="cards-grid">
+      <div class="feature-card">
+        <span class="icon">🌿</span>
+        <h4>Tiefe Achtsamkeit</h4>
+        <p>Mit allen Sinnen im Moment ankommen. Den Alltag loslassen und im Hier und Jetzt sein – ganz ohne Anstrengung.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🌲</span>
+        <h4>Shinrin-Yoku</h4>
+        <p>Die japanische Praxis des „Waldbades" ist wissenschaftlich belegt: Sie senkt Cortisol, stärkt das Immunsystem und beruhigt das Nervensystem.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">💚</span>
+        <h4>Innere Resilienz</h4>
+        <p>Regelmäßiges Waldbaden baut innere Stärke auf – eine natürliche Ressource, um Herausforderungen mit neuem Blick zu begegnen.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-band">
+    <h3>Bereit für deinen ersten Schritt?</h3>
+    <p>Entdecke unsere Gruppen- und Privatkurse in den Wäldern rund um Waiblingen und Lauf.</p>
+    <button class="btn btn-gold" onclick="go('kurse')">Jetzt Kurs finden →</button>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>© 2025 Resilienzpfade · Laura Demory</span>
+      <div class="footer-links">
+        <a onclick="go('impressum')">Impressum</a>
+        <a onclick="go('datenschutz')">Datenschutz</a>
+        <a onclick="go('kontakt')">Kontakt</a>
+        <a onclick="go('admin')" style="opacity:.35;font-size:.7em">Admin</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     WALDBADEN
+     ══════════════════════════════════════════════════════ -->
+<div id="page-waldbaden" class="page">
+  <div class="page-header">
+    <div class="eyebrow">Wissen &amp; Hintergrund</div>
+    <h2>Was ist Waldbaden?</h2>
+  </div>
+  <div class="wrap prose">
+    <h3>Shinrin-Yoku – die japanische Heilkunst</h3>
+    <p>Waldbaden – auf Japanisch <em>Shinrin-Yoku</em> (森林浴) – bedeutet wörtlich „ein Bad in der Waldatmosphäre nehmen". Die Methode wurde in den 1980er Jahren in Japan entwickelt und ist heute durch hunderte Studien wissenschaftlich belegt.</p>
+    <p>Beim Waldbaden geht es nicht ums Wandern oder Sporttreiben. Es geht darum, langsam und bewusst durch den Wald zu gehen, alle Sinne zu öffnen und sich von der Waldatmosphäre tragen zu lassen.</p>
+    <div class="rule"></div>
+    <h3>Was passiert beim Waldbaden?</h3>
+    <ul>
+      <li>Du verlangsamst dein Tempo und kommst in tiefe Entspannung</li>
+      <li>Du öffnest alle Sinne: Hören, Riechen, Sehen, Tasten</li>
+      <li>Du trittst mit der Natur in echten Kontakt – nicht als Tourist, sondern als Teil davon</li>
+      <li>Gedanken dürfen kommen und gehen – du musst nichts festhalten</li>
+    </ul>
+    <div class="rule"></div>
+    <h3>Wissenschaftlich belegte Vorteile</h3>
+    <div class="info-cards">
+      <div class="info-card">
+        <h4>Stressreduktion</h4>
+        <p>Der Cortisolspiegel sinkt nachweislich. Blutdruck und Herzrate normalisieren sich nach wenigen Minuten im Wald.</p>
+      </div>
+      <div class="info-card">
+        <h4>Immunsystem</h4>
+        <p>Bäume geben Phytonzide ab – ätherische Öle, die unsere natürlichen Killerzellen aktivieren und das Immunsystem stärken.</p>
+      </div>
+      <div class="info-card">
+        <h4>Mentale Gesundheit</h4>
+        <p>Angstzustände und depressive Verstimmungen werden durch regelmäßige Waldbäder messbar gelindert.</p>
+      </div>
+    </div>
+    <div class="rule"></div>
+    <h3>Wie läuft ein Kurs ab?</h3>
+    <p>Unsere Kurse dauern 3–4 Stunden und finden in Wäldern rund um Waiblingen und Lauf statt. Der Ablauf:</p>
+    <ol>
+      <li><strong>Ankommen</strong> – kurze Einführung, gemeinsames Durchatmen</li>
+      <li><strong>Sinnesübungen</strong> – geleitete Übungen zur Wahrnehmungsschärfung</li>
+      <li><strong>Stilles Gehen</strong> – jeder findet seinen eigenen Rhythmus</li>
+      <li><strong>Naturkontakt</strong> – Berühren, Riechen, Hören, Innehalten</li>
+      <li><strong>Stille teilen</strong> – wer möchte, erzählt von seinen Eindrücken</li>
+      <li><strong>Abschluss</strong> – Kräutertee im Wald, sanfter Ausklang</li>
+    </ol>
+    <div style="margin-top:2.5rem;text-align:center">
+      <button class="btn btn-primary" onclick="go('kurse')">Kurse ansehen →</button>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>© 2025 Resilienzpfade · Laura Demory</span>
+      <div class="footer-links">
+        <a onclick="go('impressum')">Impressum</a>
+        <a onclick="go('datenschutz')">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     ÜBER MICH
+     ══════════════════════════════════════════════════════ -->
+<div id="page-about" class="page">
+  <div class="page-header">
+    <div class="eyebrow">Meine Geschichte</div>
+    <h2>Über mich</h2>
+  </div>
+  <div class="wrap">
+    <div class="about-layout">
+      <div class="about-portrait">🌲</div>
+      <div class="prose">
+        <h3>Laura Demory</h3>
+        <p>Mein Name ist Laura Demory, und mein Weg zum Waldbaden begann mit einer persönlichen Suche nach Stille und Verbindung. In einer Zeit, die von Beschleunigung und Druck geprägt war, fand ich im Wald meinen Anker.</p>
+        <p>Heute begleite ich Menschen auf ihrem Weg zurück zur Natur – und zu sich selbst. Waldbaden ist für mich keine Methode, es ist eine Lebenshaltung.</p>
+        <p>Ich komme aus dem Raum Waiblingen und kenne die Wälder hier wie meine Westentasche. Jeder Baum, jeder Lichtstrahl hat seine Geschichte – und ich freue mich, sie mit euch zu teilen.</p>
+        <div class="rule"></div>
+        <h3>Qualifikationen</h3>
+        <ul class="qual-list">
+          <li>Zertifizierte Waldbade-Guide</li>
+          <li>Resilienz-Coach</li>
+          <li>Fortbildungen in Naturpädagogik</li>
+          <li>Erste Hilfe (gültig)</li>
+          <li>Langjährige Praxis in Achtsamkeit &amp; Meditation</li>
+        </ul>
+        <div class="rule"></div>
+        <h3>Meine Philosophie</h3>
+        <p>Ich glaube daran, dass jeder Mensch einen tiefen Zugang zur Natur in sich trägt. Manchmal ist dieser Zugang verschüttet – durch Alltag, Stress, oder einfach mangelnde Übung. Waldbaden öffnet diesen Weg wieder.</p>
+        <p>Meine Kurse sind offen für alle – egal ob du zum ersten Mal bewusst in den Wald gehst oder schon lange die Natur liebst. Es braucht keine Vorkenntnisse. Nur die Bereitschaft, dich einzulassen.</p>
+      </div>
+    </div>
+    <div style="margin-top:3rem;text-align:center">
+      <button class="btn btn-primary" onclick="go('kurse')">Kurse entdecken →</button>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>© 2025 Resilienzpfade · Laura Demory</span>
+      <div class="footer-links">
+        <a onclick="go('impressum')">Impressum</a>
+        <a onclick="go('datenschutz')">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     GRUPPENKURSE
+     ══════════════════════════════════════════════════════ -->
+<div id="page-kurse" class="page">
+  <div class="page-header">
+    <div class="eyebrow">Gemeinsam in die Natur</div>
+    <h2>Gruppenkurse</h2>
+  </div>
+  <div class="wrap-wide">
+    <div style="max-width:600px;margin-bottom:2rem">
+      <p>Alle Kurse finden in kleinen Gruppen statt – für eine persönliche, achtsame Atmosphäre. Melde dich einfach per E-Mail oder Telefon an.</p>
+    </div>
+    <div id="kurse-spinner" class="spinner">Kurse werden geladen</div>
+    <div id="kurse-error" class="alert alert-error" style="display:none"></div>
+    <div id="kurse-grid" class="courses-grid" style="display:none"></div>
+    <div id="kurse-empty" class="empty-state" style="display:none">
+      <div class="empty-icon">🌿</div>
+      <p>Aktuell sind keine Kurse eingetragen. Schau bald wieder vorbei – oder melde dich direkt bei mir!</p>
+      <div style="margin-top:1.5rem"><button class="btn btn-primary" onclick="go('kontakt')">Kontakt aufnehmen</button></div>
+    </div>
+    <div style="background:var(--parchment);padding:2.5rem;margin-top:3rem;text-align:center">
+      <div class="eyebrow-sm">Individuell &amp; flexibel</div>
+      <h3 class="serif-title" style="font-size:1.5rem">Kein passender Termin dabei?</h3>
+      <p style="max-width:460px;margin:.75rem auto 1.5rem">Ich biete auch Privatkurse für Einzelpersonen, Paare und Gruppen an – nach deinem Wunschtermin.</p>
+      <button class="btn btn-primary" onclick="go('privat')">Privatkurs anfragen →</button>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>© 2025 Resilienzpfade · Laura Demory</span>
+      <div class="footer-links">
+        <a onclick="go('impressum')">Impressum</a>
+        <a onclick="go('datenschutz')">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     PRIVATKURSE
+     ══════════════════════════════════════════════════════ -->
+<div id="page-privat" class="page">
+  <div class="page-header">
+    <div class="eyebrow">Ganz individuell</div>
+    <h2>Privatkurse</h2>
+  </div>
+  <div class="wrap">
+    <p>Du möchtest ein individuelles Waldbaden-Erlebnis – allein, zu zweit oder mit einer kleinen Gruppe? Ich plane einen maßgeschneiderten Kurs ganz nach euren Wünschen.</p>
+    <div class="info-cards" style="margin:2rem 0">
+      <div class="info-card">
+        <h4>Für Paare</h4>
+        <p>Ein gemeinsamer Nachmittag im Wald – nachhaltig, ruhig und unvergesslich.</p>
+      </div>
+      <div class="info-card">
+        <h4>Für Gruppen</h4>
+        <p>Freundinnen-Treffen, Geburtstag oder einfach gemeinsam in die Natur – ich begleite euch.</p>
+      </div>
+      <div class="info-card">
+        <h4>Für Unternehmen</h4>
+        <p>Betriebliche Gesundheitsförderung oder Team-Event auf ganz besondere, nachhaltige Art.</p>
+      </div>
+    </div>
+    <div class="form-wrap">
+      <div class="eyebrow-sm" style="margin-bottom:.5rem">Anfrage senden</div>
+      <h3 class="serif-title" style="margin-bottom:1.5rem">Ich melde mich bei dir</h3>
+      <div id="privat-alert" style="display:none"></div>
+      <div class="form-row">
+        <div class="field">
+          <label for="p-name">Name *</label>
+          <input type="text" id="p-name" placeholder="Vorname Nachname" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="p-email">E-Mail *</label>
+          <input type="email" id="p-email" placeholder="deine@email.de" autocomplete="email">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="p-phone">Telefon (optional)</label>
+          <input type="tel" id="p-phone" placeholder="+49 ..." autocomplete="tel">
+        </div>
+        <div class="field">
+          <label for="p-type">Art des Kurses</label>
+          <select id="p-type">
+            <option>Privatkurs (1–2 Personen)</option>
+            <option>Privatkurs (kleine Gruppe)</option>
+            <option>Firmen-Event / Team-Building</option>
+            <option>Sonstiges</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="p-date">Wunschdatum / Zeitraum</label>
+        <input type="text" id="p-date" placeholder="z. B. Mai 2025, Wochenende bevorzugt">
+      </div>
+      <div class="field">
+        <label for="p-msg">Deine Nachricht *</label>
+        <textarea id="p-msg" placeholder="Erzähl mir ein bisschen von dir und deinen Wünschen …"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="sendPrivatRequest()">Anfrage absenden →</button>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>© 2025 Resilienzpfade · Laura Demory</span>
+      <div class="footer-links">
+        <a onclick="go('impressum')">Impressum</a>
+        <a onclick="go('datenschutz')">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     GALERIE
+     ══════════════════════════════════════════════════════ -->
+<div id="page-galerie" class="page">
+  <div class="page-header">
+    <div class="eyebrow">Eindrücke &amp; Momente</div>
+    <h2>Galerie</h2>
+  </div>
+  <div style="padding:2rem 0">
+    <div id="galerie-spinner" class="spinner">Bilder werden geladen</div>
+    <div id="galerie-grid" class="gallery-grid" style="display:none"></div>
+  </div>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>© 2025 Resilienzpfade · Laura Demory</span>
+      <div class="footer-links">
+        <a onclick="go('impressum')">Impressum</a>
+        <a onclick="go('datenschutz')">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     KONTAKT
+     ══════════════════════════════════════════════════════ -->
+<div id="page-kontakt" class="page">
+  <div class="page-header">
+    <div class="eyebrow">In Verbindung treten</div>
+    <h2>Kontakt</h2>
+  </div>
+  <div class="wrap">
+    <p>Du hast Fragen zu meinen Kursen, möchtest dich anmelden oder einfach mehr erfahren? Ich freue mich über deine Nachricht!</p>
+    <div class="contact-grid">
+      <div class="contact-item">
+        <div class="contact-icon-wrap">📍</div>
+        <div>
+          <h5>Adresse</h5>
+          <p>Resilienzpfade · Laura Demory<br>Gehrengrabenstraße 1b<br>77886 Lauf</p>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon-wrap">📞</div>
+        <div>
+          <h5>Telefon</h5>
+          <p><a href="tel:017631152691">0176 31152691</a></p>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon-wrap">✉️</div>
+        <div>
+          <h5>E-Mail</h5>
+          <p><a href="mailto:laura.naturlauf@gmail.com">laura.naturlauf@gmail.com</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>© 2025 Resilienzpfade · Laura Demory</span>
+      <div class="footer-links">
+        <a onclick="go('impressum')">Impressum</a>
+        <a onclick="go('datenschutz')">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     IMPRESSUM
+     ══════════════════════════════════════════════════════ -->
+<div id="page-impressum" class="page">
+  <div class="page-header">
+    <div class="eyebrow">Rechtliches</div>
+    <h2>Impressum</h2>
+  </div>
+  <div class="wrap prose">
+    <h3>Angaben gemäß § 5 TMG</h3>
+    <p><strong>Resilienzpfade</strong><br>Laura Demory<br>Gehrengrabenstraße 1b<br>77886 Lauf</p>
+    <p><strong>Telefon:</strong> 0176 31152691<br><strong>E-Mail:</strong> laura.naturlauf@gmail.com</p>
+    <h3>Haftungsausschluss</h3>
+    <p>Die Inhalte dieser Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich.</p>
+    <h3>Haftung für Links</h3>
+    <p>Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber verantwortlich.</p>
+    <h3>Urheberrecht</h3>
+    <p>Die durch die Seitenbetreiberin erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung der jeweiligen Autorin.</p>
+  </div>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>© 2025 Resilienzpfade · Laura Demory</span>
+      <div class="footer-links">
+        <a onclick="go('datenschutz')">Datenschutz</a>
+        <a onclick="go('home')">Startseite</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     DATENSCHUTZ
+     ══════════════════════════════════════════════════════ -->
+<div id="page-datenschutz" class="page">
+  <div class="page-header">
+    <div class="eyebrow">Rechtliches</div>
+    <h2>Datenschutzerklärung</h2>
+  </div>
+  <div class="wrap prose">
+    <h3>1. Datenschutz auf einen Blick</h3>
+    <p>Diese Datenschutzerklärung klärt Sie über Art, Umfang und Zweck der Verarbeitung von personenbezogenen Daten innerhalb unseres Onlineangebotes auf.</p>
+    <h3>2. Verantwortliche Stelle</h3>
+    <p>Laura Demory, Gehrengrabenstraße 1b, 77886 Lauf<br>E-Mail: laura.naturlauf@gmail.com · Telefon: 0176 31152691</p>
+    <h3>3. Datenerfassung</h3>
+    <p>Diese Website verwendet <strong>keine Cookies</strong> und kein Tracking. Personenbezogene Daten werden ausschließlich dann erfasst, wenn Sie uns über das Kontaktformular freiwillig Angaben mitteilen.</p>
+    <h3>4. Kontaktformular</h3>
+    <p>Wenn Sie uns per Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben zwecks Bearbeitung der Anfrage gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Vertragsanbahnung).</p>
+    <h3>5. Hosting</h3>
+    <p>Diese Website wird über GitHub Pages gehostet. Dabei können serverseitig IP-Adressen und Zugriffszeiten protokolliert werden. Weitere Informationen: <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub Privacy Statement</a>.</p>
+    <h3>6. Ihre Rechte</h3>
+    <p>Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung Ihrer personenbezogenen Daten sowie das Recht auf Datenübertragbarkeit. Wenden Sie sich dazu an: laura.naturlauf@gmail.com</p>
+    <h3>7. Beschwerderecht</h3>
+    <p>Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Die zuständige Behörde in Baden-Württemberg ist der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Baden-Württemberg.</p>
+  </div>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>© 2025 Resilienzpfade · Laura Demory</span>
+      <div class="footer-links">
+        <a onclick="go('impressum')">Impressum</a>
+        <a onclick="go('home')">Startseite</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     ADMIN
+     ══════════════════════════════════════════════════════ -->
+<div id="page-admin" class="page">
+  <div class="page-header">
+    <div class="eyebrow">Geschützter Bereich</div>
+    <h2>Administration</h2>
+  </div>
+
+  <div class="admin-login-wrap" id="admin-login">
+    <div class="admin-login-box">
+      <h3>Anmelden</h3>
+      <div id="admin-login-err" class="alert alert-error" style="display:none">Falsches Passwort.</div>
+      <div class="field">
+        <label for="admin-pw">Passwort</label>
+        <input type="password" id="admin-pw" placeholder="Passwort eingeben"
+               onkeypress="if(event.key==='Enter')adminLogin()">
+      </div>
+      <button class="btn btn-primary" style="width:100%" onclick="adminLogin()">Anmelden →</button>
+    </div>
+  </div>
+
+  <div id="admin-panel" class="wrap-wide">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:2rem">
+      <h3 class="serif-title" style="margin:0">Admin-Bereich</h3>
+      <button class="btn btn-sm btn-danger" onclick="adminLogout()">Abmelden</button>
+    </div>
+    <div class="alert alert-info" style="margin-bottom:2rem">Kurse und Galerie werden direkt im Google Sheet gespeichert.</div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-tab="kurse-admin" onclick="switchTab(this)">Kurse</button>
+      <button class="admin-tab" data-tab="galerie-admin" onclick="switchTab(this)">Galerie</button>
+    </div>
+
+    <!-- Kurse -->
+    <div class="tab-pane active" id="tab-kurse-admin">
+      <div class="admin-form-section">
+        <h4>Neuen Kurs anlegen</h4>
+        <div id="kurs-alert" style="display:none"></div>
+        <div class="field">
+          <label>Kursname *</label>
+          <input type="text" id="a-kname" placeholder="z. B. Waldbaden im Frühling">
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Datum *</label>
+            <input type="date" id="a-kdatum">
+          </div>
+          <div class="field">
+            <label>Uhrzeit</label>
+            <input type="time" id="a-kuhrzeit">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Ort</label>
+            <input type="text" id="a-kort" placeholder="z. B. Welzheimer Wald">
+          </div>
+          <div class="field">
+            <label>Treffpunkt</label>
+            <input type="text" id="a-ktreff" placeholder="z. B. Parkplatz Waldstadion">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Preis</label>
+            <input type="text" id="a-kpreis" placeholder="z. B. 45 €">
+          </div>
+          <div class="field">
+            <label>Verfügbarkeit</label>
+            <select id="a-kverfueg">
+              <option value="Verfügbar">Verfügbar</option>
+              <option value="Wenige Plätze">Wenige Plätze</option>
+              <option value="Ausgebucht">Ausgebucht</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="saveKurs()">Kurs speichern →</button>
+      </div>
+      <h4 style="font-family:var(--fd);font-style:italic;font-size:1.25rem;color:var(--pine);margin-bottom:1rem;font-weight:400">Bestehende Kurse</h4>
+      <div id="admin-kurs-list"><div class="spinner">Wird geladen</div></div>
+    </div>
+
+    <!-- Galerie -->
+    <div class="tab-pane" id="tab-galerie-admin">
+      <div class="admin-form-section">
+        <h4>Bild hinzufügen</h4>
+        <div id="bild-alert" style="display:none"></div>
+        <div class="field">
+          <label>Bild-URL *</label>
+          <input type="url" id="a-burl" placeholder="https://…">
+        </div>
+        <div class="field">
+          <label>Bildbeschreibung (Alt-Text)</label>
+          <input type="text" id="a-balt" placeholder="z. B. Waldbaden im Herbst">
+        </div>
+        <button class="btn btn-primary" onclick="saveBild()">Bild hinzufügen →</button>
+      </div>
+      <h4 style="font-family:var(--fd);font-style:italic;font-size:1.25rem;color:var(--pine);margin-bottom:1rem;font-weight:400">Aktuelle Bilder</h4>
+      <div id="admin-galerie-list"><div class="spinner">Wird geladen</div></div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>© 2025 Resilienzpfade · Laura Demory</span>
+      <div class="footer-links">
+        <a onclick="go('impressum')">Impressum</a>
+        <a onclick="go('datenschutz')">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     LIGHTBOX + COOKIE
+     ══════════════════════════════════════════════════════ -->
+<div id="lightbox" onclick="closeLightbox()">
+  <button class="lb-close">✕</button>
+  <img id="lb-img" src="" alt="">
+</div>
+
+<div id="cookie-banner">
+  <span>Diese Website verwendet keine Cookies. <a onclick="go('datenschutz')">Mehr erfahren</a></span>
+  <button class="btn btn-sm btn-gold" onclick="dismissCookie()">Verstanden</button>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     JAVASCRIPT
+     ══════════════════════════════════════════════════════ -->
+<script>
+/* ─────────────────────────────────────────────────────
+   ⚠️  EINZIGE ANPASSUNG NACH DEPLOYMENT:
+   Die Apps Script URL hier eintragen.
+   ───────────────────────────────────────────────────── */
+const APPS_URL  = 'https://script.google.com/macros/s/AKfycbyTtp1GQliXe3UQYTe285UoxC3ktuQ_r9rz2BmOL3EEvEeV1wbLaEV0gY61Q8pUexIrGQ/exec';
+const ADMIN_PW  = '130892';
+
+/* ─────────────────────────────────────────────────────
+   ROUTING
+   ───────────────────────────────────────────────────── */
+let currentPage     = 'home';
+let kurseLoaded     = false;
+let galerieLoaded   = false;
+
+function go(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if (!target) return;
+  target.classList.add('active');
+  currentPage = page;
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  closeMenu();
+  updateNav(page);
+  history.pushState({ page }, '', '#' + page);
+  if (page === 'kurse'   && !kurseLoaded)   loadKurse();
+  if (page === 'galerie' && !galerieLoaded) loadGalerie();
+  if (page === 'admin'   && isAdmin())      { loadAdminKurse(); loadAdminGalerie(); }
+}
+
+window.addEventListener('popstate', e => {
+  const page = (e.state && e.state.page) || 'home';
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const t = document.getElementById('page-' + page);
+  if (t) { t.classList.add('active'); currentPage = page; updateNav(page); }
+});
+
+function updateNav(page) {
+  document.getElementById('nav').className = (page === 'home') ? 'on-hero' : 'scrolled';
+}
+
+window.addEventListener('scroll', () => {
+  if (currentPage === 'home') {
+    document.getElementById('nav').className = window.scrollY > 60 ? 'scrolled' : 'on-hero';
+  }
+});
+
+/* ─────────────────────────────────────────────────────
+   HAMBURGER
+   ───────────────────────────────────────────────────── */
+function toggleMenu() {
+  document.getElementById('mobile-menu').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+
+/* ─────────────────────────────────────────────────────
+   HERO PARALLAX
+   ───────────────────────────────────────────────────── */
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('hero-bg').classList.add('loaded'), 80);
+});
+
+/* ─────────────────────────────────────────────────────
+   API HELPERS
+   ───────────────────────────────────────────────────── */
+async function appsGet(sheet) {
+  const res = await fetch(`${APPS_URL}?action=get&sheet=${encodeURIComponent(sheet)}`);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
+async function appsPost(data) {
+  const res = await fetch(APPS_URL, {
+    method:  'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body:    JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json().catch(() => ({}));
+}
+
+/* ─────────────────────────────────────────────────────
+   KURSE – öffentlich
+   ───────────────────────────────────────────────────── */
+async function loadKurse() {
+  const spin  = document.getElementById('kurse-spinner');
+  const grid  = document.getElementById('kurse-grid');
+  const errEl = document.getElementById('kurse-error');
+  const empty = document.getElementById('kurse-empty');
+
+  try {
+    const data = await appsGet('Kurse');
+    spin.style.display = 'none';
+    const rows = (data.values || []).slice(1).filter(r => r[0]);
+    if (!rows.length) { empty.style.display = 'block'; kurseLoaded = true; return; }
+
+    grid.style.display = 'grid';
+    rows.forEach(row => {
+      const [name, datum, uhrzeit, ort, treffpunkt, verfueg, preis] = row;
+      const cls    = verfueg === 'Ausgebucht' ? 'avail-full' : verfueg === 'Wenige Plätze' ? 'avail-few' : 'avail-ok';
+      const booked = verfueg === 'Ausgebucht';
+      const card   = document.createElement('div');
+      card.className = 'course-card';
+      card.innerHTML = `
+        <div class="course-card-top">
+          <h4>${esc(name)}</h4>
+          <span class="avail-badge ${cls}">${esc(verfueg || 'Verfügbar')}</span>
+        </div>
+        <div class="course-card-body">
+          ${datum      ? `<div class="course-detail"><span class="lbl">📅 Datum</span><span>${esc(fmtDate(datum))}</span></div>` : ''}
+          ${uhrzeit    ? `<div class="course-detail"><span class="lbl">🕐 Uhrzeit</span><span>${esc(uhrzeit)} Uhr</span></div>` : ''}
+          ${ort        ? `<div class="course-detail"><span class="lbl">🌲 Ort</span><span>${esc(ort)}</span></div>` : ''}
+          ${treffpunkt ? `<div class="course-detail"><span class="lbl">📍 Treffpunkt</span><span>${esc(treffpunkt)}</span></div>` : ''}
+          ${preis      ? `<div class="course-detail"><span class="lbl">💶 Preis</span><span>${esc(preis)}</span></div>` : ''}
+        </div>
+        <div class="course-card-footer">
+          <button class="btn btn-primary btn-sm" onclick="go('privat')" ${booked ? 'disabled' : ''}>
+            ${booked ? 'Ausgebucht' : 'Anfrage senden →'}
+          </button>
+        </div>`;
+      grid.appendChild(card);
+    });
+    kurseLoaded = true;
+  } catch (e) {
+    spin.style.display = 'none';
+    errEl.style.display = 'block';
+    errEl.textContent = 'Kurse konnten nicht geladen werden. Bitte schreib mir direkt: laura.naturlauf@gmail.com';
+  }
+}
+
+/* ─────────────────────────────────────────────────────
+   GALERIE – öffentlich
+   ───────────────────────────────────────────────────── */
+const FALLBACK = [
+  { url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=80', alt: 'Wald im Sonnenlicht' },
+  { url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80', alt: 'Waldweg' },
+  { url: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=800&q=80', alt: 'Bäume im Wald' },
+  { url: 'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=800&q=80', alt: 'Natur und Licht' },
+  { url: 'https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=800&q=80', alt: 'Morgenlicht im Wald' },
+  { url: 'https://images.unsplash.com/photo-1476611338391-6f395a0ebc7b?w=800&q=80', alt: 'Waldboden' },
+];
+
+async function loadGalerie() {
+  const spin = document.getElementById('galerie-spinner');
+  const grid = document.getElementById('galerie-grid');
+  let images = FALLBACK;
+
+  try {
+    const data = await appsGet('Galerie');
+    const rows = (data.values || []).slice(1).filter(r => r[0]);
+    if (rows.length) images = rows.map(r => ({ url: r[0], alt: r[1] || 'Waldbaden' }));
+  } catch (e) { /* Fallback bleibt */ }
+
+  spin.style.display = 'none';
+  grid.style.display = 'grid';
+  images.forEach(img => {
+    const item = document.createElement('div');
+    item.className = 'gallery-item';
+    item.innerHTML = `<img src="${esc(img.url)}" alt="${esc(img.alt)}" loading="lazy">`;
+    item.onclick = () => openLightbox(img.url, img.alt);
+    grid.appendChild(item);
+  });
+  galerieLoaded = true;
+}
+
+/* ─────────────────────────────────────────────────────
+   LIGHTBOX
+   ───────────────────────────────────────────────────── */
+function openLightbox(src, alt) {
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lb-img').alt = alt;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+/* ─────────────────────────────────────────────────────
+   PRIVATKURS ANFRAGE
+   ───────────────────────────────────────────────────── */
+async function sendPrivatRequest() {
+  const al   = document.getElementById('privat-alert');
+  const name = document.getElementById('p-name').value.trim();
+  const mail = document.getElementById('p-email').value.trim();
+  const msg  = document.getElementById('p-msg').value.trim();
+  if (!name || !mail || !msg) { showAlert(al,'error','Bitte alle Pflichtfelder (*) ausfüllen.'); return; }
+  if (!mail.includes('@'))    { showAlert(al,'error','Bitte eine gültige E-Mail-Adresse eingeben.'); return; }
+  showAlert(al,'info','Wird gesendet …');
+  try {
+    await appsPost({
+      action:  'anfrage',
+      name, email: mail,
+      phone:   document.getElementById('p-phone').value,
+      type:    document.getElementById('p-type').value,
+      date:    document.getElementById('p-date').value,
+      message: msg,
+    });
+    showAlert(al,'success','✓ Vielen Dank! Deine Anfrage ist angekommen. Ich melde mich bald bei dir.');
+    ['p-name','p-email','p-phone','p-date','p-msg'].forEach(id => document.getElementById(id).value = '');
+  } catch (e) {
+    showAlert(al,'error','Fehler beim Senden. Bitte schreib direkt an laura.naturlauf@gmail.com');
+  }
+}
+
+/* ─────────────────────────────────────────────────────
+   ADMIN
+   ───────────────────────────────────────────────────── */
+function isAdmin() { return sessionStorage.getItem('rp_admin') === '1'; }
+
+function adminLogin() {
+  const pw  = document.getElementById('admin-pw').value;
+  const err = document.getElementById('admin-login-err');
+  if (pw === ADMIN_PW) {
+    sessionStorage.setItem('rp_admin','1');
+    document.getElementById('admin-login').style.display = 'none';
+    document.getElementById('admin-panel').classList.add('visible');
+    loadAdminKurse(); loadAdminGalerie();
+  } else {
+    err.style.display = 'block';
+    document.getElementById('admin-pw').value = '';
+  }
+}
+
+function adminLogout() {
+  sessionStorage.removeItem('rp_admin');
+  document.getElementById('admin-login').style.display = 'flex';
+  document.getElementById('admin-panel').classList.remove('visible');
+  document.getElementById('admin-pw').value = '';
+}
+
+// Auto-login wenn Session noch aktiv
+if (isAdmin()) {
+  document.getElementById('admin-login').style.display = 'none';
+  document.getElementById('admin-panel').classList.add('visible');
+}
+
+function switchTab(btn) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+}
+
+async function saveKurs() {
+  const al    = document.getElementById('kurs-alert');
+  const name  = document.getElementById('a-kname').value.trim();
+  const datum = document.getElementById('a-kdatum').value;
+  if (!name || !datum) { showAlert(al,'error','Name und Datum sind Pflichtfelder.'); return; }
+  showAlert(al,'info','Wird gespeichert …');
+  try {
+    await appsPost({
+      action: 'addKurs', name, datum,
+      uhrzeit:    document.getElementById('a-kuhrzeit').value,
+      ort:        document.getElementById('a-kort').value.trim(),
+      treffpunkt: document.getElementById('a-ktreff').value.trim(),
+      preis:      document.getElementById('a-kpreis').value.trim(),
+      verfueg:    document.getElementById('a-kverfueg').value,
+    });
+    showAlert(al,'success','✓ Kurs gespeichert!');
+    ['a-kname','a-kdatum','a-kuhrzeit','a-kort','a-ktreff','a-kpreis'].forEach(id => document.getElementById(id).value='');
+    kurseLoaded = false;
+    document.getElementById('kurse-grid').innerHTML = '';
+    setTimeout(loadAdminKurse, 600);
+  } catch (e) { showAlert(al,'error','Fehler: ' + e.message); }
+}
+
+async function loadAdminKurse() {
+  const list = document.getElementById('admin-kurs-list');
+  if (!list) return;
+  list.innerHTML = '<div class="spinner">Wird geladen</div>';
+  try {
+    const data = await appsGet('Kurse');
+    list.innerHTML = '';
+    const rows = (data.values||[]).slice(1).filter(r=>r[0]);
+    if (!rows.length) { list.innerHTML='<p style="color:var(--text-lt);padding:1rem 0">Noch keine Kurse.</p>'; return; }
+    rows.forEach((row,idx) => {
+      const el = document.createElement('div');
+      el.className = 'admin-list-item';
+      el.innerHTML = `
+        <div class="admin-list-item-info">
+          <h5>${esc(row[0])}</h5>
+          <small>${esc(fmtDate(row[1]))}${row[2]?' · '+row[2]+' Uhr':''}${row[3]?' · '+row[3]:''} · ${esc(row[5]||'Verfügbar')}</small>
+        </div>
+        <button class="btn btn-sm btn-danger" onclick="deleteRow('Kurse',${idx+2},this)">Löschen</button>`;
+      list.appendChild(el);
+    });
+  } catch (e) { list.innerHTML = `<div class="alert alert-error">Ladefehler: ${e.message}</div>`; }
+}
+
+async function saveBild() {
+  const al  = document.getElementById('bild-alert');
+  const url = document.getElementById('a-burl').value.trim();
+  if (!url) { showAlert(al,'error','Bitte eine URL eingeben.'); return; }
+  showAlert(al,'info','Wird gespeichert …');
+  try {
+    await appsPost({ action:'addBild', url, alt: document.getElementById('a-balt').value.trim() });
+    showAlert(al,'success','✓ Bild hinzugefügt!');
+    document.getElementById('a-burl').value = '';
+    document.getElementById('a-balt').value = '';
+    galerieLoaded = false;
+    document.getElementById('galerie-grid').innerHTML = '';
+    setTimeout(loadAdminGalerie, 600);
+  } catch (e) { showAlert(al,'error','Fehler: ' + e.message); }
+}
+
+async function loadAdminGalerie() {
+  const list = document.getElementById('admin-galerie-list');
+  if (!list) return;
+  list.innerHTML = '<div class="spinner">Wird geladen</div>';
+  try {
+    const data = await appsGet('Galerie');
+    list.innerHTML = '';
+    const rows = (data.values||[]).slice(1).filter(r=>r[0]);
+    if (!rows.length) { list.innerHTML='<p style="color:var(--text-lt);padding:1rem 0">Noch keine Bilder.</p>'; return; }
+    rows.forEach((row,idx) => {
+      const el = document.createElement('div');
+      el.className = 'admin-list-item';
+      el.innerHTML = `
+        <div class="admin-list-item-info" style="display:flex;align-items:center;gap:1rem">
+          <img src="${esc(row[0])}" style="width:56px;height:56px;object-fit:cover;border-radius:2px" alt="">
+          <small style="word-break:break-all">${esc(row[1]||row[0])}</small>
+        </div>
+        <button class="btn btn-sm btn-danger" onclick="deleteRow('Galerie',${idx+2},this)">Löschen</button>`;
+      list.appendChild(el);
+    });
+  } catch (e) { list.innerHTML = `<div class="alert alert-error">Ladefehler: ${e.message}</div>`; }
+}
+
+async function deleteRow(sheet, row, btn) {
+  if (!confirm('Diesen Eintrag wirklich löschen?')) return;
+  btn.disabled = true; btn.textContent = '…';
+  try {
+    await appsPost({ action:'deleteRow', sheet, row });
+    btn.closest('.admin-list-item').remove();
+    if (sheet==='Kurse')   { kurseLoaded=false;   document.getElementById('kurse-grid').innerHTML=''; }
+    if (sheet==='Galerie') { galerieLoaded=false; document.getElementById('galerie-grid').innerHTML=''; }
+  } catch (e) {
+    alert('Fehler: ' + e.message);
+    btn.disabled=false; btn.textContent='Löschen';
+  }
+}
+
+/* ─────────────────────────────────────────────────────
+   HELPERS
+   ───────────────────────────────────────────────────── */
+function esc(s) {
+  return String(s||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function fmtDate(d) {
+  if (!d) return '';
+  try {
+    const dt = new Date(d);
+    if (isNaN(dt)) return d;
+    return dt.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  } catch { return d; }
+}
+
+function showAlert(el, type, msg) {
+  el.className = 'alert alert-' + type;
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function dismissCookie() {
+  localStorage.setItem('cookieOk','1');
+  document.getElementById('cookie-banner').classList.add('hidden');
+}
+
+/* ─────────────────────────────────────────────────────
+   INIT
+   ───────────────────────────────────────────────────── */
+(function init() {
+  const hash = location.hash.replace('#','');
+  if (hash && document.getElementById('page-' + hash)) {
+    go(hash);
+  } else {
+    updateNav('home');
+  }
+  if (localStorage.getItem('cookieOk')) {
+    document.getElementById('cookie-banner').classList.add('hidden');
+  }
+})();
+</script>
+</body>
+</html>
