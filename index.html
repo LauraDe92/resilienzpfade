@@ -233,6 +233,29 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
 .footer-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
 .footer-links{display:flex;gap:1.5rem;flex-wrap:wrap}
 .footer-links a{color:rgba(255,255,255,.55);text-decoration:none;cursor:pointer;transition:color .2s}.footer-links a:hover{color:#fff}
+
+/* BUCHUNGS-MODAL */
+#buchung-modal{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;padding:1rem}
+#buchung-modal.open{display:flex}
+.bm-backdrop{position:absolute;inset:0;background:rgba(10,24,14,.72);backdrop-filter:blur(4px)}
+.bm-box{position:relative;background:var(--white);max-width:560px;width:100%;max-height:92vh;overflow-y:auto;border-top:3px solid var(--pine);box-shadow:var(--sh-lg);padding:2.5rem 2rem}
+@media(max-width:500px){.bm-box{padding:1.5rem 1.2rem}}
+.bm-close{position:absolute;top:1rem;right:1.2rem;background:none;border:none;font-size:1.4rem;color:var(--text-lt);cursor:pointer;line-height:1;padding:.2rem .4rem;transition:color .2s}.bm-close:hover{color:var(--pine)}
+.bm-kurs-info{background:var(--pine);color:#fff;padding:1rem 1.25rem;border-radius:2px;margin-bottom:1.75rem;font-size:.9rem;line-height:1.5}
+.bm-kurs-info strong{font-family:var(--fd);font-style:italic;font-size:1.15rem;display:block;margin-bottom:.3rem;font-weight:400}
+
+/* WHATSAPP CHECKBOX FIELD */
+.checkbox-field{display:flex;align-items:flex-start;gap:.65rem;margin-bottom:1.2rem;cursor:pointer}
+.checkbox-field input[type=checkbox]{width:18px;height:18px;min-width:18px;margin-top:.15rem;accent-color:var(--pine);cursor:pointer;border-radius:2px}
+.checkbox-field span{font-size:.88rem;color:var(--text-mid);line-height:1.4}
+.checkbox-field span strong{color:var(--pine)}
+
+/* TOAST NOTIFICATION (Bug 3) */
+#toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(120%);z-index:99999;min-width:280px;max-width:90vw;padding:1rem 1.5rem;border-radius:4px;font-size:.9rem;font-weight:400;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.22);transition:transform .38s cubic-bezier(.34,1.56,.64,1),opacity .3s;opacity:0;pointer-events:none}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
+#toast.toast-success{background:#2e7d32;color:#fff}
+#toast.toast-error{background:#c62828;color:#fff}
+#toast.toast-info{background:#1565c0;color:#fff}
 </style>
 </head>
 <body>
@@ -435,6 +458,13 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
       </div>
       <div class="field"><label>Wunschdatum / Zeitraum</label><input type="text" id="p-date" placeholder="z. B. Mai 2025, Wochenende bevorzugt"></div>
       <div class="field"><label>Deine Nachricht *</label><textarea id="p-msg" placeholder="Erzähl mir ein bisschen von dir und deinen Wünschen …"></textarea></div>
+      <label class="checkbox-field">
+        <input type="checkbox" id="p-whatsapp" onchange="toggleWaField('p-wa-wrap')">
+        <span>Ich möchte an der <strong>WhatsApp-Gruppe</strong> zum Kurs teilnehmen</span>
+      </label>
+      <div id="p-wa-wrap" style="display:none">
+        <div class="field"><label>Handynummer * (für WhatsApp)</label><input type="tel" id="p-handynummer" placeholder="+49 176 …"></div>
+      </div>
       <button class="btn btn-primary" onclick="sendPrivatRequest()">Anfrage absenden →</button>
     </div>
   </div>
@@ -459,7 +489,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     <div class="contact-grid">
       <div class="contact-item"><div class="contact-icon-wrap">📍</div><div><h5>Adresse</h5><p>Resilienzpfade · Laura Demory<br>Gehrengrabenstraße 1b<br>77886 Lauf</p></div></div>
       <div class="contact-item"><div class="contact-icon-wrap">📞</div><div><h5>Telefon</h5><p><a href="tel:017631152691">0176 31152691</a></p></div></div>
-      <div class="contact-item"><div class="contact-icon-wrap">✉️</div><div><h5>E-Mail</h5><p><a href="mailto:laura.naturlauf@gmail.com">laura.naturlauf@gmail.com</a></p></div></div>
+      <div class="contact-item"><div class="contact-icon-wrap">✉️</div><div><h5>E-Mail</h5><p><a href="/cdn-cgi/l/email-protection#076b667275662969667372756b66726147606a666e6b2964686a"><span class="__cf_email__" data-cfemail="e68a87939487c888879293948a879380a6818b878f8ac885898b">[email&#160;protected]</span></a></p></div></div>
     </div>
   </div>
   <footer class="site-footer"><div class="footer-inner"><span>© 2025 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
@@ -471,7 +501,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
   <div class="wrap prose" id="ct-impressum">
     <h3>Angaben gemäß § 5 TMG</h3>
     <p><strong>Resilienzpfade</strong><br>Laura Demory<br>Gehrengrabenstraße 1b<br>77886 Lauf</p>
-    <p><strong>Telefon:</strong> 0176 31152691<br><strong>E-Mail:</strong> laura.naturlauf@gmail.com</p>
+    <p><strong>Telefon:</strong> 0176 31152691<br><strong>E-Mail:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="402c213532216e2e213435322c21352600272d21292c6e232f2d">[email&#160;protected]</a></p>
     <h3>Haftungsausschluss</h3>
     <p>Die Inhalte dieser Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität können wir keine Gewähr übernehmen.</p>
     <h3>Haftung für Links</h3>
@@ -489,7 +519,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     <h3>1. Datenschutz auf einen Blick</h3>
     <p>Diese Datenschutzerklärung klärt über Art, Umfang und Zweck der Verarbeitung von personenbezogenen Daten auf.</p>
     <h3>2. Verantwortliche Stelle</h3>
-    <p>Laura Demory, Gehrengrabenstraße 1b, 77886 Lauf · laura.naturlauf@gmail.com</p>
+    <p>Laura Demory, Gehrengrabenstraße 1b, 77886 Lauf · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2a464b5f584b04444b5e5f58464b5f4c6a4d474b434604494547">[email&#160;protected]</a></p>
     <h3>3. Datenerfassung</h3>
     <p>Diese Website verwendet <strong>keine Cookies</strong> und kein Tracking. Daten werden nur über das Kontaktformular erfasst.</p>
     <h3>4. Kontaktformular</h3>
@@ -497,7 +527,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     <h3>5. Hosting</h3>
     <p>Hosting über GitHub Pages. Es können IP-Adressen serverseitig protokolliert werden.</p>
     <h3>6. Ihre Rechte</h3>
-    <p>Auskunft, Berichtigung, Löschung: laura.naturlauf@gmail.com</p>
+    <p>Auskunft, Berichtigung, Löschung: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c1ada0b4b3a0efafa0b5b4b3ada0b4a781a6aca0a8adefa2aeac">[email&#160;protected]</a></p>
     <h3>7. Beschwerderecht</h3>
     <p>Zuständige Behörde: Landesbeauftragter für Datenschutz Baden-Württemberg.</p>
   </div>
@@ -725,6 +755,39 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
   <footer class="site-footer"><div class="footer-inner"><span>© 2025 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
 </div>
 
+<!-- BUCHUNGS-MODAL (Bug 1) -->
+<div id="buchung-modal" role="dialog" aria-modal="true" aria-labelledby="bm-title">
+  <div class="bm-backdrop" onclick="closeKursBuchung()"></div>
+  <div class="bm-box">
+    <button class="bm-close" onclick="closeKursBuchung()" aria-label="Schließen">✕</button>
+    <div class="eyebrow-sm" style="margin-bottom:.4rem">Kurs buchen</div>
+    <h3 class="serif-title" id="bm-title" style="font-size:1.5rem;margin-bottom:1.25rem">Anmeldung</h3>
+    <div class="bm-kurs-info">
+      <strong id="bm-kursname">–</strong>
+      <span id="bm-kursmeta"></span>
+    </div>
+    <div id="bm-alert" style="display:none"></div>
+    <div class="form-row">
+      <div class="field"><label>Vorname *</label><input type="text" id="bm-vorname" placeholder="Vorname" autocomplete="given-name"></div>
+      <div class="field"><label>Nachname *</label><input type="text" id="bm-nachname" placeholder="Nachname" autocomplete="family-name"></div>
+    </div>
+    <div class="field"><label>E-Mail *</label><input type="email" id="bm-email" placeholder="deine@email.de" autocomplete="email"></div>
+    <div class="field"><label>Telefonnummer (optional)</label><input type="tel" id="bm-phone" placeholder="+49 …" autocomplete="tel"></div>
+    <div class="field"><label>Nachricht / Anmerkungen</label><textarea id="bm-msg" style="min-height:90px" placeholder="z. B. Fragen, Besonderheiten …"></textarea></div>
+    <label class="checkbox-field">
+      <input type="checkbox" id="bm-whatsapp" onchange="toggleWaField('bm-wa-wrap')">
+      <span>Ich möchte an der <strong>WhatsApp-Gruppe</strong> zum Kurs teilnehmen</span>
+    </label>
+    <div id="bm-wa-wrap" style="display:none">
+      <div class="field"><label>Handynummer * (für WhatsApp)</label><input type="tel" id="bm-handynummer" placeholder="+49 176 …"></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center" id="bm-submit-btn" onclick="sendKursBuchung()">Jetzt anmelden →</button>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICATION (Bug 3) -->
+<div id="toast"></div>
+
 <!-- LIGHTBOX + COOKIE -->
 <div id="lightbox" onclick="closeLightbox()">
   <button class="lb-close">✕</button>
@@ -735,7 +798,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
   <button class="btn btn-sm btn-gold" onclick="dismissCookie()">Verstanden</button>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ─────────────────────────────────────────────────
    ⚠️ NACH DEPLOYMENT HIER EINTRAGEN:
    ───────────────────────────────────────────────── */
@@ -1031,8 +1094,8 @@ async function loadKurse() {
           ${preis      ?`<div class="course-detail"><span class="lbl">💶 Preis</span><span>${esc(fmtPreis(preis))}</span></div>`:''}
         </div>
         <div class="course-card-footer">
-          <button class="btn btn-primary btn-sm" onclick="go('privat')" ${booked?'disabled':''}>
-            ${booked?'Ausgebucht':'Anfrage senden →'}
+          <button class="btn btn-primary btn-sm" onclick="${booked?'':('openKursBuchung('+JSON.stringify(name)+','+JSON.stringify(datum)+','+JSON.stringify(uhrzeit)+','+JSON.stringify(ort)+')')}" ${booked?'disabled':''}>
+            ${booked?'Ausgebucht':'Jetzt anmelden →'}
           </button>
         </div>`;
       grid.appendChild(card);
@@ -1171,24 +1234,161 @@ async function saveBild() {
 }
 
 /* ─────────────────────────────────────────────────
-   PRIVATKURS ANFRAGE
+   TOAST (Bug 3) – immer im sichtbaren Bereich
+   ───────────────────────────────────────────────── */
+let toastTimer = null;
+function showToast(type, msg, duration) {
+  duration = duration || 5000;
+  const t = document.getElementById('toast');
+  t.className = 'show toast-' + type;
+  t.textContent = msg;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = ''; }, duration);
+}
+
+/* ─────────────────────────────────────────────────
+   WHATSAPP TOGGLE (Bug 1 & 2)
+   ───────────────────────────────────────────────── */
+function toggleWaField(wrapId) {
+  const wrap = document.getElementById(wrapId);
+  const checkId = wrapId === 'bm-wa-wrap' ? 'bm-whatsapp' : 'p-whatsapp';
+  wrap.style.display = document.getElementById(checkId).checked ? 'block' : 'none';
+  if (!document.getElementById(checkId).checked) {
+    const phoneId = wrapId === 'bm-wa-wrap' ? 'bm-handynummer' : 'p-handynummer';
+    document.getElementById(phoneId).value = '';
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   BUCHUNGS-MODAL (Bug 1)
+   ───────────────────────────────────────────────── */
+let _buchungKurs = {};
+
+function openKursBuchung(name, datum, uhrzeit, ort) {
+  _buchungKurs = { name, datum, uhrzeit, ort };
+  document.getElementById('bm-kursname').textContent = name;
+  const meta = [datum ? fmtDate(datum) : '', uhrzeit ? uhrzeit + ' Uhr' : '', ort || ''].filter(Boolean).join(' · ');
+  document.getElementById('bm-kursmeta').textContent = meta;
+  // Reset
+  ['bm-vorname','bm-nachname','bm-email','bm-phone','bm-msg','bm-handynummer'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('bm-whatsapp').checked = false;
+  document.getElementById('bm-wa-wrap').style.display = 'none';
+  document.getElementById('bm-alert').style.display = 'none';
+  document.getElementById('bm-submit-btn').disabled = false;
+  document.getElementById('buchung-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeKursBuchung() {
+  document.getElementById('buchung-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeKursBuchung(); });
+
+async function sendKursBuchung() {
+  const al       = document.getElementById('bm-alert');
+  const vorname  = document.getElementById('bm-vorname').value.trim();
+  const nachname = document.getElementById('bm-nachname').value.trim();
+  const mail     = document.getElementById('bm-email').value.trim();
+  const waChecked = document.getElementById('bm-whatsapp').checked;
+  const handy    = document.getElementById('bm-handynummer').value.trim();
+
+  if (!vorname || !nachname || !mail) {
+    showAlert(al, 'error', 'Bitte alle Pflichtfelder (*) ausfüllen.');
+    al.scrollIntoView({ behavior:'smooth', block:'nearest' }); return;
+  }
+  if (!mail.includes('@')) {
+    showAlert(al, 'error', 'Bitte eine gültige E-Mail-Adresse eingeben.');
+    al.scrollIntoView({ behavior:'smooth', block:'nearest' }); return;
+  }
+  if (waChecked && !handy) {
+    showAlert(al, 'error', 'Bitte Handynummer für die WhatsApp-Gruppe angeben.');
+    al.scrollIntoView({ behavior:'smooth', block:'nearest' }); return;
+  }
+
+  showAlert(al, 'info', 'Wird gesendet …');
+  al.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  document.getElementById('bm-submit-btn').disabled = true;
+
+  const msg = [
+    document.getElementById('bm-msg').value.trim(),
+    waChecked ? 'WhatsApp-Gruppe: Ja · Handy: ' + handy : 'WhatsApp-Gruppe: Nein',
+  ].filter(Boolean).join('\n');
+
+  try {
+    await appsPost({
+      action:    'buchung',
+      vorname,
+      nachname,
+      email:     mail,
+      phone:     document.getElementById('bm-phone').value.trim(),
+      kursname:  _buchungKurs.name || '',
+      datum:     _buchungKurs.datum || '',
+      uhrzeit:   _buchungKurs.uhrzeit || '',
+      ort:       _buchungKurs.ort || '',
+      whatsapp:  waChecked,
+      handynummer: waChecked ? handy : '',
+      message:   msg,
+    });
+    closeKursBuchung();
+    showToast('success', '✓ Anmeldung erhalten! Du bekommst gleich eine Bestätigung per E-Mail.', 7000);
+  } catch(e) {
+    showAlert(al, 'error', 'Fehler beim Senden. Bitte schreib direkt an laura.naturlauf@gmail.com');
+    al.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    document.getElementById('bm-submit-btn').disabled = false;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   PRIVATKURS ANFRAGE (Bug 2 + Bug 3)
    ───────────────────────────────────────────────── */
 async function sendPrivatRequest() {
   const al   = document.getElementById('privat-alert');
   const name = document.getElementById('p-name').value.trim();
   const mail = document.getElementById('p-email').value.trim();
   const msg  = document.getElementById('p-msg').value.trim();
-  if (!name||!mail||!msg) { showAlert(al,'error','Bitte alle Pflichtfelder (*) ausfüllen.'); return; }
-  if (!mail.includes('@')) { showAlert(al,'error','Bitte eine gültige E-Mail-Adresse eingeben.'); return; }
+  const waChecked = document.getElementById('p-whatsapp').checked;
+  const handy = document.getElementById('p-handynummer') ? document.getElementById('p-handynummer').value.trim() : '';
+
+  if (!name||!mail||!msg) {
+    showAlert(al,'error','Bitte alle Pflichtfelder (*) ausfüllen.');
+    al.scrollIntoView({ behavior:'smooth', block:'nearest' }); return;
+  }
+  if (!mail.includes('@')) {
+    showAlert(al,'error','Bitte eine gültige E-Mail-Adresse eingeben.');
+    al.scrollIntoView({ behavior:'smooth', block:'nearest' }); return;
+  }
+  if (waChecked && !handy) {
+    showAlert(al,'error','Bitte Handynummer für die WhatsApp-Gruppe angeben.');
+    al.scrollIntoView({ behavior:'smooth', block:'nearest' }); return;
+  }
+
   showAlert(al,'info','Wird gesendet …');
+  al.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+  const fullMsg = [msg, waChecked ? 'WhatsApp-Gruppe: Ja · Handy: ' + handy : 'WhatsApp-Gruppe: Nein'].join('\n');
+
   try {
     await appsPost({ action:'anfrage', name, email:mail,
       phone:document.getElementById('p-phone').value,
       type:document.getElementById('p-type').value,
-      date:document.getElementById('p-date').value, message:msg });
+      date:document.getElementById('p-date').value,
+      whatsapp: waChecked,
+      handynummer: waChecked ? handy : '',
+      message: fullMsg });
     showAlert(al,'success','✓ Vielen Dank! Deine Anfrage ist angekommen. Ich melde mich bald bei dir.');
+    al.scrollIntoView({ behavior:'smooth', block:'nearest' });
     ['p-name','p-email','p-phone','p-date','p-msg'].forEach(id => document.getElementById(id).value='');
-  } catch(e) { showAlert(al,'error','Fehler beim Senden. Bitte schreib direkt an laura.naturlauf@gmail.com'); }
+    document.getElementById('p-whatsapp').checked = false;
+    if (document.getElementById('p-handynummer')) document.getElementById('p-handynummer').value = '';
+    document.getElementById('p-wa-wrap').style.display = 'none';
+  } catch(e) {
+    showAlert(al,'error','Fehler beim Senden. Bitte schreib direkt an laura.naturlauf@gmail.com');
+    al.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
 }
 
 /* ─────────────────────────────────────────────────
@@ -1316,22 +1516,4 @@ function dismissCookie() {
   document.getElementById('cookie-banner').classList.add('hidden');
 }
 
-/* ─────────────────────────────────────────────────
-   INIT
-   ───────────────────────────────────────────────── */
-(function init() {
-  const hash = location.hash.replace('#','');
-  if (hash && document.getElementById('page-'+hash)) {
-    go(hash);
-  } else {
-    updateNav('home');
-  }
-  if (localStorage.getItem('cookieOk')) {
-    document.getElementById('cookie-banner').classList.add('hidden');
-  }
-  // Content im Hintergrund laden (ohne die Seite zu blockieren)
-  loadContent();
-})();
-</script>
-</body>
-</html>
+/* ────────────────────────�

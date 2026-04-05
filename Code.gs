@@ -185,24 +185,30 @@ function doPost(e) {
 
     // ── Privatkurs-Anfrage ────────────────────────────────────
     if (action === 'anfrage') {
+      const waInfo = data.whatsapp ? ('WhatsApp: Ja · Handy: ' + (data.handynummer||'–')) : 'WhatsApp: Nein';
       try {
         getSheet(ss,'Anfragen').appendRow([
           new Date().toLocaleString('de-DE'),
           data.name||'', data.email||'', data.phone||'',
-          data.type||'', data.date||'', data.message||'',
+          data.type||'', data.date||'', (data.message||'') + '\n' + waInfo,
         ]);
       } catch(sheetErr) { Logger.log('Anfragen-Sheet: ' + sheetErr.message); }
 
       MailApp.sendEmail({
         to:      EMAIL_EMPFAENGER,
-        subject: '[Resilienzpfade] Neue Anfrage von ' + (data.name||'Unbekannt'),
+        // Hinweis: Damit "Von: laura.naturlauf@gmail.com" erscheint, muss diese Adresse
+        // im Google-Konto unter Einstellungen → "E-Mail senden als" als Alias eingetragen sein.
+        from:    EMAIL_EMPFAENGER,
+        name:    'Resilienzpfade · Kontaktformular',
+        subject: '[Resilienzpfade] Neue Privatanfrage von ' + (data.name||'Unbekannt'),
         body: [
-          'Neue Privatanfrage über resilienzpfade:\n',
+          'Neue Privatanfrage über Resilienzpfade:\n',
           'Name:    '      + (data.name   ||'-'),
           'E-Mail:  '      + (data.email  ||'-'),
           'Telefon: '      + (data.phone  ||'-'),
           'Kurstyp: '      + (data.type   ||'-'),
           'Wunsch: '       + (data.date   ||'-'),
+          waInfo,
           '\nNachricht:\n' + (data.message||'-'),
         ].join('\n'),
         replyTo: data.email||'',
@@ -212,6 +218,8 @@ function doPost(e) {
         try {
           MailApp.sendEmail({
             to:      data.email,
+            from:    EMAIL_EMPFAENGER,
+            name:    'Laura – Resilienzpfade',
             subject: 'Deine Anfrage ist angekommen – Resilienzpfade',
             body: [
               'Hallo ' + ((data.name||'').split(' ')[0]) + ',\n',
@@ -226,6 +234,66 @@ function doPost(e) {
             ].join('\n'),
           });
         } catch(mErr) { Logger.log('Bestätigungsmail: ' + mErr.message); }
+      }
+      return jsonResponse({ status:'ok' });
+    }
+
+    // ── Gruppenkurs-Buchung ───────────────────────────────────
+    if (action === 'buchung') {
+      const name    = ((data.vorname||'') + ' ' + (data.nachname||'')).trim();
+      const waInfo  = data.whatsapp ? ('WhatsApp: Ja · Handy: ' + (data.handynummer||'–')) : 'WhatsApp: Nein';
+      const kursInfo = [data.kursname||'', data.datum||'', data.uhrzeit||'', data.ort||''].filter(Boolean).join(' · ');
+
+      try {
+        getSheet(ss,'Anfragen').appendRow([
+          new Date().toLocaleString('de-DE'),
+          name, data.email||'', data.phone||'',
+          'Buchung: ' + (data.kursname||'Gruppenkurs'),
+          kursInfo,
+          (data.message||'') + '\n' + waInfo,
+        ]);
+      } catch(sheetErr) { Logger.log('Buchungen-Sheet: ' + sheetErr.message); }
+
+      MailApp.sendEmail({
+        to:      EMAIL_EMPFAENGER,
+        from:    EMAIL_EMPFAENGER,
+        name:    'Resilienzpfade · Buchung',
+        subject: '[Resilienzpfade] Neue Buchung: ' + (data.kursname||'Gruppenkurs') + ' – ' + name,
+        body: [
+          'Neue Kursbuchung über Resilienzpfade:\n',
+          'Kurs:     ' + (data.kursname||'-'),
+          'Datum:    ' + (data.datum   ||'-') + (data.uhrzeit ? ' · ' + data.uhrzeit + ' Uhr' : ''),
+          'Ort:      ' + (data.ort     ||'-'),
+          '\nTeilnehmer:',
+          'Name:     ' + name,
+          'E-Mail:   ' + (data.email   ||'-'),
+          'Telefon:  ' + (data.phone   ||'-'),
+          waInfo,
+          '\nNachricht:\n' + (data.message||'-'),
+        ].join('\n'),
+        replyTo: data.email||'',
+      });
+
+      if (data.email && data.email.indexOf('@') !== -1) {
+        try {
+          MailApp.sendEmail({
+            to:      data.email,
+            from:    EMAIL_EMPFAENGER,
+            name:    'Laura – Resilienzpfade',
+            subject: 'Deine Anmeldung ist angekommen – ' + (data.kursname||'Kurs'),
+            body: [
+              'Hallo ' + (data.vorname||name) + ',\n',
+              'deine Anmeldung für den folgenden Kurs ist bei mir angekommen:\n',
+              '📅 ' + (data.kursname||'-') + (data.datum ? '  ·  ' + data.datum : '') + (data.uhrzeit ? ' · ' + data.uhrzeit + ' Uhr' : ''),
+              data.ort ? '📍 ' + data.ort : '',
+              '\nIch melde mich in Kürze mit allen weiteren Informationen.\n',
+              'Bis bald im Wald,\nLaura\n',
+              '─────────────────────────',
+              'Resilienzpfade · Laura Demory',
+              'laura.naturlauf@gmail.com · 0176 31152691',
+            ].filter(Boolean).join('\n'),
+          });
+        } catch(mErr) { Logger.log('Buchungs-Bestätigungsmail: ' + mErr.message); }
       }
       return jsonResponse({ status:'ok' });
     }
