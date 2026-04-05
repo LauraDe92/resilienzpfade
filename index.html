@@ -1094,10 +1094,16 @@ async function loadKurse() {
           ${preis      ?`<div class="course-detail"><span class="lbl">💶 Preis</span><span>${esc(fmtPreis(preis))}</span></div>`:''}
         </div>
         <div class="course-card-footer">
-          <button class="btn btn-primary btn-sm" onclick="${booked?'':('openKursBuchung('+JSON.stringify(name)+','+JSON.stringify(datum)+','+JSON.stringify(uhrzeit)+','+JSON.stringify(ort)+')')}" ${booked?'disabled':''}>
+          <button class="btn btn-primary btn-sm kurs-buchung-btn" ${booked?'disabled':''}>
             ${booked?'Ausgebucht':'Jetzt anmelden →'}
           </button>
         </div>`;
+      // Event listener statt inline onclick – vermeidet Anführungszeichen-Probleme
+      if (!booked) {
+        card.querySelector('.kurs-buchung-btn').addEventListener('click', () => {
+          openKursBuchung(name, datum, uhrzeit, ort);
+        });
+      }
       grid.appendChild(card);
     });
     kurseLoaded = true;
@@ -1516,4 +1522,23 @@ function dismissCookie() {
   document.getElementById('cookie-banner').classList.add('hidden');
 }
 
-/* ────────────────────────�
+/* ────────────────────────�
+/* ─────────────────────────────────────────────────
+   INIT
+   ───────────────────────────────────────────────── */
+(function init() {
+  const hash = location.hash.replace('#','');
+  if (hash && document.getElementById('page-'+hash)) {
+    go(hash);
+  } else {
+    updateNav('home');
+  }
+  if (localStorage.getItem('cookieOk')) {
+    document.getElementById('cookie-banner').classList.add('hidden');
+  }
+  // Content im Hintergrund laden (ohne die Seite zu blockieren)
+  loadContent();
+})();
+</script>
+</body>
+</html>
