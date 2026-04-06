@@ -128,8 +128,10 @@ p{color:var(--text-mid);margin-bottom:1.1rem}p:last-child{margin-bottom:0}
 /* ABOUT */
 .about-layout{display:grid;grid-template-columns:1fr;gap:3rem;align-items:start}
 @media(min-width:680px){.about-layout{grid-template-columns:220px 1fr}}
-.about-portrait{aspect-ratio:3/4;background:linear-gradient(135deg,#a8c4b0 0%,#2d5a3d 100%);display:flex;align-items:center;justify-content:center;font-size:5rem;overflow:hidden}
+.about-portrait{aspect-ratio:3/4;background:linear-gradient(135deg,#a8c4b0 0%,#2d5a3d 100%);display:flex;align-items:center;justify-content:center;font-size:5rem;overflow:hidden;position:relative}
 .about-portrait img{width:100%;height:100%;object-fit:cover}
+.portrait-placeholder{display:flex;flex-direction:column;align-items:center;gap:.5rem;color:rgba(255,255,255,.7);font-size:3.5rem}
+.portrait-placeholder small{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;font-family:var(--fb)}
 .qual-list{list-style:none;padding:0}
 .qual-list li{display:flex;align-items:flex-start;gap:.75rem;padding:.65rem 0;border-bottom:1px solid var(--parchment);font-size:.9rem;color:var(--text-mid)}
 .qual-list li::before{content:'✦';color:var(--gold);font-size:.6rem;margin-top:.35rem;flex-shrink:0}
@@ -256,6 +258,12 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
 #toast.toast-success{background:#2e7d32;color:#fff}
 #toast.toast-error{background:#c62828;color:#fff}
 #toast.toast-info{background:#1565c0;color:#fff}
+/* QR-CODE */
+.qr-wrap{display:flex;flex-direction:column;align-items:center;gap:1.5rem;padding:3rem 1.5rem;text-align:center}
+.qr-box{background:var(--white);padding:1.5rem;box-shadow:var(--sh-md);display:inline-block;border-radius:2px}
+.qr-box img{width:260px;height:260px;display:block}
+.qr-url{font-size:.82rem;color:var(--text-lt);word-break:break-all;max-width:320px}
+@media print{#nav,#mobile-menu,.site-footer,.btn{display:none!important}.qr-wrap{padding-top:2rem}}
 </style>
 </head>
 <body>
@@ -291,7 +299,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     <div class="hero-bg" id="hero-bg"></div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
-      <div class="hero-eyebrow">Resilienzpfade · Waiblingen</div>
+      <div class="hero-eyebrow">Resilienzpfade</div>
       <h1><span id="ct-hero-l1">Im Wald</span><br><em id="ct-hero-l2">zu sich finden</em></h1>
       <p class="hero-sub" id="ct-hero-sub">Waldbaden als Weg zur inneren Stille, Kraft und Heilung</p>
       <div class="hero-cta">
@@ -334,7 +342,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     <button class="btn btn-gold" onclick="go('kurse')">Jetzt Kurs finden →</button>
   </div>
 
-  <footer class="site-footer"><div class="footer-inner"><span>© 2025 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a><a onclick="go('kontakt')">Kontakt</a><a onclick="go('admin')" style="opacity:.3;font-size:.7em">Admin</a></div></div></footer>
+  <footer class="site-footer"><div class="footer-inner"><span>© 2026 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a><a onclick="go('kontakt')">Kontakt</a><a onclick="go('qr')" style="opacity:.5;font-size:.7em">QR</a><a onclick="go('admin')" style="opacity:.3;font-size:.7em">Admin</a></div></div></footer>
 </div>
 
 <!-- ═══════════════ WALDBADEN ═══════════════ -->
@@ -371,7 +379,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     </ol>
     <div style="margin-top:2.5rem;text-align:center"><button class="btn btn-primary" onclick="go('kurse')">Kurse ansehen →</button></div>
   </div>
-  <footer class="site-footer"><div class="footer-inner"><span>© 2025 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
+  <footer class="site-footer"><div class="footer-inner"><span>© 2026 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
 </div>
 
 <!-- ═══════════════ ÜBER MICH ═══════════════ -->
@@ -379,7 +387,9 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
   <div class="page-header"><div class="eyebrow">Meine Geschichte</div><h2>Über mich</h2></div>
   <div class="wrap">
     <div class="about-layout">
-      <div class="about-portrait" id="about-portrait-wrap">🌲</div>
+      <div class="about-portrait" id="about-portrait-wrap">
+        <div class="portrait-placeholder"><span>🌲</span><small>Kein Foto</small></div>
+      </div>
       <div class="prose">
         <h3>Laura Demory</h3>
         <div id="ct-about-bio">
@@ -406,7 +416,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     </div>
     <div style="margin-top:3rem;text-align:center"><button class="btn btn-primary" onclick="go('kurse')">Kurse entdecken →</button></div>
   </div>
-  <footer class="site-footer"><div class="footer-inner"><span>© 2025 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
+  <footer class="site-footer"><div class="footer-inner"><span>© 2026 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
 </div>
 
 <!-- ═══════════════ GRUPPENKURSE ═══════════════ -->
@@ -429,7 +439,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
       <button class="btn btn-primary" onclick="go('privat')">Privatkurs anfragen →</button>
     </div>
   </div>
-  <footer class="site-footer"><div class="footer-inner"><span>© 2025 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
+  <footer class="site-footer"><div class="footer-inner"><span>© 2026 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
 </div>
 
 <!-- ═══════════════ PRIVATKURSE ═══════════════ -->
@@ -468,7 +478,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
       <button class="btn btn-primary" onclick="sendPrivatRequest()">Anfrage absenden →</button>
     </div>
   </div>
-  <footer class="site-footer"><div class="footer-inner"><span>© 2025 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
+  <footer class="site-footer"><div class="footer-inner"><span>© 2026 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
 </div>
 
 <!-- ═══════════════ GALERIE ═══════════════ -->
@@ -478,7 +488,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     <div id="galerie-spinner" class="spinner">Bilder werden geladen</div>
     <div id="galerie-grid" class="gallery-grid" style="display:none"></div>
   </div>
-  <footer class="site-footer"><div class="footer-inner"><span>© 2025 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
+  <footer class="site-footer"><div class="footer-inner"><span>© 2026 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
 </div>
 
 <!-- ═══════════════ KONTAKT ═══════════════ -->
@@ -492,7 +502,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
       <div class="contact-item"><div class="contact-icon-wrap">✉️</div><div><h5>E-Mail</h5><p><a href="/cdn-cgi/l/email-protection#076b667275662969667372756b66726147606a666e6b2964686a"><span class="__cf_email__" data-cfemail="e68a87939487c888879293948a879380a6818b878f8ac885898b">[email&#160;protected]</span></a></p></div></div>
     </div>
   </div>
-  <footer class="site-footer"><div class="footer-inner"><span>© 2025 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
+  <footer class="site-footer"><div class="footer-inner"><span>© 2026 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
 </div>
 
 <!-- ═══════════════ IMPRESSUM ═══════════════ -->
@@ -509,7 +519,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     <h3>Urheberrecht</h3>
     <p>Die erstellten Inhalte unterliegen dem deutschen Urheberrecht. Die Vervielfältigung bedarf der schriftlichen Zustimmung.</p>
   </div>
-  <footer class="site-footer"><div class="footer-inner"><span>© 2025 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('datenschutz')">Datenschutz</a><a onclick="go('home')">Startseite</a></div></div></footer>
+  <footer class="site-footer"><div class="footer-inner"><span>© 2026 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('datenschutz')">Datenschutz</a><a onclick="go('home')">Startseite</a></div></div></footer>
 </div>
 
 <!-- ═══════════════ DATENSCHUTZ ═══════════════ -->
@@ -531,7 +541,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     <h3>7. Beschwerderecht</h3>
     <p>Zuständige Behörde: Landesbeauftragter für Datenschutz Baden-Württemberg.</p>
   </div>
-  <footer class="site-footer"><div class="footer-inner"><span>© 2025 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('home')">Startseite</a></div></div></footer>
+  <footer class="site-footer"><div class="footer-inner"><span>© 2026 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('home')">Startseite</a></div></div></footer>
 </div>
 
 <!-- ═══════════════ ADMIN ═══════════════ -->
@@ -685,6 +695,20 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
       <!-- Über mich -->
       <div class="content-section" id="cs-about">
         <div class="admin-form-section">
+          <h4>Profilfoto</h4>
+          <div id="portrait-alert" style="display:none"></div>
+          <div style="display:flex;align-items:flex-start;gap:1.5rem;flex-wrap:wrap;margin-bottom:1rem">
+            <div id="portrait-preview-wrap" style="width:110px;aspect-ratio:3/4;background:linear-gradient(135deg,#a8c4b0,#2d5a3d);display:flex;align-items:center;justify-content:center;font-size:2.5rem;overflow:hidden;flex-shrink:0;border-radius:2px">🌲</div>
+            <div style="flex:1;min-width:200px">
+              <div class="field"><label>Foto hochladen (vom Gerät)</label>
+                <input type="file" id="portrait-file" accept="image/*" onchange="previewPortrait(this)">
+                <small style="color:var(--text-lt);font-size:.75rem;margin-top:.3rem;display:block">Empfohlen: Hochformat, mind. 600×800 px.</small>
+              </div>
+              <button class="btn btn-primary btn-sm" id="portrait-upload-btn" onclick="uploadPortrait()">Foto speichern →</button>
+            </div>
+          </div>
+        </div>
+        <div class="admin-form-section">
           <h4>Biografie</h4>
           <div class="content-field"><label>Absätze durch Leerzeile trennen</label><textarea data-ck="about_bio" style="min-height:160px"></textarea></div>
         </div>
@@ -752,7 +776,26 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     </div><!-- /tab-inhalte-admin -->
   </div><!-- /admin-panel -->
 
-  <footer class="site-footer"><div class="footer-inner"><span>© 2025 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
+  <footer class="site-footer"><div class="footer-inner"><span>© 2026 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
+</div>
+
+<!-- ═══════════════ QR-CODE ═══════════════ -->
+<div id="page-qr" class="page">
+  <div class="page-header"><div class="eyebrow">Website teilen</div><h2>QR-Code</h2></div>
+  <div class="wrap" style="text-align:center">
+    <div class="qr-wrap">
+      <p style="max-width:480px;margin:0 auto">Scanne diesen Code mit dem Handy, um direkt auf die Website zu gelangen – oder drucke ihn aus für Flyer, Aushänge und Visitenkarten.</p>
+      <div class="qr-box">
+        <img id="qr-img" src="" alt="QR-Code resilienzpfade.de">
+      </div>
+      <p class="qr-url" id="qr-url-display"></p>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center">
+        <button class="btn btn-primary" onclick="downloadQr()">QR-Code herunterladen →</button>
+        <button class="btn btn-outline" style="color:var(--pine);border-color:var(--pine)" onclick="window.print()">Drucken 🖨</button>
+      </div>
+    </div>
+  </div>
+  <footer class="site-footer"><div class="footer-inner"><span>© 2026 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
 </div>
 
 <!-- BUCHUNGS-MODAL (Bug 1) -->
@@ -841,6 +884,7 @@ const CT = {
   privat_at3:   { id:'ct-privat-at3',   type:'text' },
   privat_ax3:   { id:'ct-privat-ax3',   type:'text' },
   kontakt_intro:{ id:'ct-kontakt-intro',type:'text' },
+  about_portrait: { id:'about-portrait-wrap', type:'portrait' },
   impressum_text:  { id:'ct-impressum',    type:'md' },
   datenschutz_text:{ id:'ct-datenschutz',  type:'md' },
 };
@@ -849,7 +893,7 @@ const CT = {
 const PAGE_KEYS = {
   startseite:  ['hero_line1','hero_line2','hero_sub','feat1_titel','feat1_text','feat2_titel','feat2_text','feat3_titel','feat3_text','cta_titel','cta_text'],
   waldbaden:   ['wb_intro1','wb_intro2','wb_passiert','wb_vt1','wb_vx1','wb_vt2','wb_vx2','wb_vt3','wb_vx3','wb_ablauf'],
-  about:       ['about_bio','about_qual','about_phil'],
+  about:       ['about_portrait','about_bio','about_qual','about_phil'],
   privat:      ['privat_intro','privat_at1','privat_ax1','privat_at2','privat_ax2','privat_at3','privat_ax3'],
   kontakt:     ['kontakt_intro'],
   impressum:   ['impressum_text'],
@@ -872,6 +916,7 @@ function go(page) {
   history.pushState({ page }, '', '#' + page);
   if (page === 'kurse'   && !kurseLoaded)   loadKurse();
   if (page === 'galerie' && !galerieLoaded) loadGalerie();
+  if (page === 'qr')                        initQr();
   if (page === 'admin'   && isAdmin())      { loadAdminKurse(); loadAdminGalerie(); loadContentAdmin(); }
 }
 window.addEventListener('popstate', e => {
@@ -975,6 +1020,11 @@ function applyContent(content) {
 
     } else if (cfg.type === 'md') {
       el.innerHTML = md2html(val);
+
+    } else if (cfg.type === 'portrait') {
+      if (val && val.startsWith('http')) {
+        el.innerHTML = `<img src="${esc(fixDriveUrl(val))}" alt="Laura Demory">`;
+      }
     }
   });
 }
@@ -985,6 +1035,11 @@ function fillContentAdmin(content) {
     const key = el.dataset.ck;
     if (content[key] !== undefined) el.value = content[key];
   });
+  // Portrait-Vorschau im Admin aktualisieren
+  if (content['about_portrait'] && content['about_portrait'].startsWith('http')) {
+    const pw = document.getElementById('portrait-preview-wrap');
+    if (pw) pw.innerHTML = `<img src="${esc(fixDriveUrl(content['about_portrait']))}" style="width:100%;height:100%;object-fit:cover" alt="Portrait">`;
+  }
 }
 
 /** Lädt content (mit sessionStorage-Cache) */
@@ -1133,7 +1188,7 @@ async function loadGalerie() {
   try {
     const data = await appsGet({ action:'get', sheet:'Galerie' });
     const rows = (data.values||[]).slice(1).filter(r => r[0]);
-    if (rows.length) images = rows.map(r => ({url:r[0],alt:r[1]||'Waldbaden'}));
+    if (rows.length) images = rows.map(r => ({url: fixDriveUrl(r[0]), alt:r[1]||'Waldbaden'}));
   } catch(e) {}
   spin.style.display='none'; grid.style.display='grid';
   images.forEach(img => {
@@ -1144,6 +1199,18 @@ async function loadGalerie() {
     grid.appendChild(item);
   });
   galerieLoaded = true;
+}
+
+/** Google Drive uc?export=view → thumbnail-URL umwandeln (CORS-kompatibel) */
+function fixDriveUrl(url) {
+  if (!url) return url;
+  // Format: https://drive.google.com/uc?export=view&id=FILE_ID
+  const m = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w1200';
+  // Format: https://drive.google.com/file/d/FILE_ID/view
+  const m2 = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (m2) return 'https://drive.google.com/thumbnail?id=' + m2[1] + '&sz=w1200';
+  return url;
 }
 
 function openLightbox(src,alt) {
@@ -1522,7 +1589,95 @@ function dismissCookie() {
   document.getElementById('cookie-banner').classList.add('hidden');
 }
 
-/* ────────────────────────�
+/* ─────────────────────────────────────────────────
+   PORTRAIT UPLOAD (Admin → Über mich)
+   ───────────────────────────────────────────────── */
+function previewPortrait(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const pw = document.getElementById('portrait-preview-wrap');
+  pw.innerHTML = `<img src="${URL.createObjectURL(file)}" style="width:100%;height:100%;object-fit:cover" alt="Vorschau">`;
+}
+
+async function uploadPortrait() {
+  const al  = document.getElementById('portrait-alert');
+  const btn = document.getElementById('portrait-upload-btn');
+  const file = document.getElementById('portrait-file').files[0];
+  if (!file) { showAlert(al,'error','Bitte zuerst ein Foto auswählen.'); return; }
+
+  showAlert(al,'info','Foto wird hochgeladen …');
+  btn.disabled = true;
+
+  resizeAndEncode(file, 1200, 0.88, async (b64, mimeType) => {
+    try {
+      const result = await appsPost({
+        action: 'addBildFile', base64: b64, mimeType,
+        filename: 'portrait-laura.' + (file.name.split('.').pop()||'jpg'), alt: 'Laura Demory'
+      });
+      const url = result.url || '';
+      if (!url) throw new Error('Keine URL zurückgegeben');
+
+      // Als Inhalts-Key speichern
+      await appsPost({ action:'updateInhalte', updates:{ about_portrait: url } });
+      sessionStorage.removeItem('rp_content');
+
+      // Sofort im Frontend anzeigen
+      const wrap = document.getElementById('about-portrait-wrap');
+      if (wrap) wrap.innerHTML = `<img src="${esc(fixDriveUrl(url))}" alt="Laura Demory">`;
+      const pw = document.getElementById('portrait-preview-wrap');
+      if (pw) pw.innerHTML = `<img src="${esc(fixDriveUrl(url))}" style="width:100%;height:100%;object-fit:cover" alt="Portrait">`;
+
+      showAlert(al,'success','✓ Profilfoto gespeichert!');
+      document.getElementById('portrait-file').value = '';
+    } catch(e) {
+      showAlert(al,'error','Fehler: ' + e.message);
+    }
+    btn.disabled = false;
+  });
+}
+
+/* ─────────────────────────────────────────────────
+   QR-CODE
+   ───────────────────────────────────────────────── */
+function initQr() {
+  const url   = location.href.split('#')[0];  // Basis-URL ohne Hash
+  const api   = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=16&data='
+                + encodeURIComponent(url);
+  const img   = document.getElementById('qr-img');
+  const label = document.getElementById('qr-url-display');
+  if (img)   { img.src = api; img.dataset.dlUrl = api; }
+  if (label) label.textContent = url;
+}
+
+function downloadQr() {
+  const img = document.getElementById('qr-img');
+  if (!img) return;
+  const a   = document.createElement('a');
+  a.href    = img.dataset.dlUrl || img.src;
+  a.download = 'resilienzpfade-qr.png';
+  a.target  = '_blank';
+  a.click();
+}
+
+/* ─────────────────────────────────────────────────
+   INIT
+   ───────────────────────────────────────────────── */
+(function init() {
+  const hash = location.hash.replace('#','');
+  if (hash && document.getElementById('page-'+hash)) {
+    go(hash);
+  } else {
+    updateNav('home');
+  }
+  if (localStorage.getItem('cookieOk')) {
+    document.getElementById('cookie-banner').classList.add('hidden');
+  }
+  loadContent();
+  initQr();
+})();
+</script>
+</body>
+</html>�
 /* ─────────────────────────────────────────────────
    INIT
    ───────────────────────────────────────────────── */
