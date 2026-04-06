@@ -1677,23 +1677,4 @@ function downloadQr() {
 })();
 </script>
 </body>
-</html>�
-/* ─────────────────────────────────────────────────
-   INIT
-   ───────────────────────────────────────────────── */
-(function init() {
-  const hash = location.hash.replace('#','');
-  if (hash && document.getElementById('page-'+hash)) {
-    go(hash);
-  } else {
-    updateNav('home');
-  }
-  if (localStorage.getItem('cookieOk')) {
-    document.getElementById('cookie-banner').classList.add('hidden');
-  }
-  // Content im Hintergrund laden (ohne die Seite zu blockieren)
-  loadContent();
-})();
-</script>
-</body>
 </html>
