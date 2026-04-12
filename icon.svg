@@ -1,15 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512">
+  <!--
+    Resilienzpfade · Icon
+    Konzept: Blatt & Pfad
+    Das goldene Mittelstück (Hauptader) symbolisiert den Pfad / die Resilienz-Reise.
+    Die grünen Seitenadern stehen für Wachstum und Verbindung mit der Natur.
+    Farbpalette aus dem Website-Design-System.
+  -->
+
+  <!-- Hintergrundkreis -->
   <circle cx="50" cy="50" r="50" fill="#1c3d28"/>
-  <polygon points="50,12 19,58 81,58" fill="#2d5a3d"/>
-  <polygon points="50,12 21,56 79,56" fill="#4a8c5c"/>
-  <polygon points="50,16 28,52 72,52" fill="#3d7a4f"/>
-  <polygon points="50,28 22,64 78,64" fill="#2d5a3d"/>
-  <polygon points="50,28 24,62 76,62" fill="#4a8c5c"/>
-  <polygon points="50,32 30,58 70,58" fill="#3d7a4f"/>
-  <polygon points="50,44 21,76 79,76" fill="#2d5a3d"/>
-  <polygon points="50,44 23,74 77,74" fill="#3d7a4f"/>
-  <polygon points="50,48 32,68 68,68" fill="#4a8c5c"/>
-  <rect x="45" y="73" width="10" height="14" rx="2" fill="#5c3d2e"/>
-  <rect x="34" y="85" width="32" height="3" rx="1.5" fill="#4a8c5c" opacity="0.5"/>
-  <circle cx="50" cy="11" r="2.2" fill="#b5893a"/>
+
+  <!-- Blatt-Hauptfläche -->
+  <path d="M 50 12 C 62 16, 76 30, 74 50 C 72 68, 62 83, 50 88 C 38 83, 28 68, 26 50 C 24 30, 38 16, 50 12 Z"
+        fill="#2d5a3d"/>
+
+  <!-- Lichtzone oben (flache Tiefe ohne Gradient) -->
+  <path d="M 50 15 C 59 19, 67 29, 63 44 C 57 38, 50 28, 43 44 C 39 29, 41 19, 50 15 Z"
+        fill="#3d7a4f" opacity="0.5"/>
+
+  <!-- Blatt-Kontur -->
+  <path d="M 50 12 C 62 16, 76 30, 74 50 C 72 68, 62 83, 50 88 C 38 83, 28 68, 26 50 C 24 30, 38 16, 50 12 Z"
+        fill="none" stroke="#4a8c5c" stroke-width="0.6"/>
+
+  <!-- Seitenadern – oben -->
+  <path d="M 50 29 Q 62 35, 66 43" fill="none" stroke="#6a9478" stroke-width="0.9" stroke-linecap="round" opacity="0.6"/>
+  <path d="M 50 29 Q 38 35, 34 43" fill="none" stroke="#6a9478" stroke-width="0.9" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Seitenadern – mitte -->
+  <path d="M 50 43 Q 62 48, 65 56" fill="none" stroke="#6a9478" stroke-width="0.85" stroke-linecap="round" opacity="0.5"/>
+  <path d="M 50 43 Q 38 48, 35 56" fill="none" stroke="#6a9478" stroke-width="0.85" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Seitenadern – unten -->
+  <path d="M 50 56 Q 60 60, 63 67" fill="none" stroke="#6a9478" stroke-width="0.75" stroke-linecap="round" opacity="0.4"/>
+  <path d="M 50 56 Q 40 60, 37 67" fill="none" stroke="#6a9478" stroke-width="0.75" stroke-linecap="round" opacity="0.4"/>
+
+  <!-- Seitenadern – basis -->
+  <path d="M 50 67 Q 57 70, 59 76" fill="none" stroke="#6a9478" stroke-width="0.65" stroke-linecap="round" opacity="0.3"/>
+  <path d="M 50 67 Q 43 70, 41 76" fill="none" stroke="#6a9478" stroke-width="0.65" stroke-linecap="round" opacity="0.3"/>
+
+  <!-- Hauptader / DER PFAD – Gold -->
+  <path d="M 50 14 C 51 33, 51 59, 50 86"
+        fill="none" stroke="#b5893a" stroke-width="2.8" stroke-linecap="round"/>
 </svg>
