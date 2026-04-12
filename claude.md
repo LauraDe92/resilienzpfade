@@ -24,8 +24,8 @@ Hosting: GitHub Pages | Datenbank: Google Sheets via Apps Script | Mobile-optimi
 ```
 /
 ├── index.html      ← Gesamte WebApp (SPA)
-├── Header.png      ← Hero-Hintergrundbild (von Laura hochgeladen)
-├── icon.svg        ← Favicon / App-Icon
+├── Header.png      ← Hero-Hintergrundbild
+├── icon.svg        ← Favicon / App-Icon (v=2 Cache-Busting aktiv)
 └── Code.gs         ← NUR zur Referenz, läuft in Google Apps Script
 ```
 
@@ -38,6 +38,8 @@ const APPS_URL = 'https://script.google.com/macros/s/AKfycbyTtp1GQliXe3UQYTe285U
 const ADMIN_PW = '130892';
 ```
 
+**Favicon:** `<link rel="icon" href="icon.svg?v=2">` – die `?v=2`-Versionsangabe erzwingt bei GitHub Pages das Nachladen des Icons. Bei zukünftigen Icon-Updates auf `?v=3`, `?v=4` usw. erhöhen.
+
 **E-Mail-Empfänger (Code.gs):** `laura.naturlauf@gmail.com`
 
 ---
@@ -46,14 +48,12 @@ const ADMIN_PW = '130892';
 
 **Sheet-ID:** `171ttO0cWO0rhjWjyWX0h7-0evVzI-RfQMPu0w_JL2vU`
 
-**Tabellenblätter** (angelegt via `setupSheets()`):
-
 | Blatt | Spalten | Zweck |
 |-------|---------|-------|
 | Kurse | Name, Datum, Uhrzeit, Ort, Treffpunkt, Verfuegbarkeit, Preis | Kursangebote |
-| Galerie | URL, Alt-Text | Galeriebilder (Drive-URLs oder extern) |
-| Anfragen | Datum, Name, Email, Telefon, Typ, Wunschdatum, Nachricht | Eingehende Buchungen & Privatanfragen (WhatsApp-Info steht in Nachricht) |
-| Inhalte | Schluessel, Wert | Alle editierbaren Seitentexte (Key-Value) |
+| Galerie | URL, Alt-Text | Galeriebilder (Drive-thumbnail-URLs) |
+| Anfragen | Datum, Name, Email, Telefon, Typ, Wunschdatum, Nachricht | Buchungen + Privatanfragen |
+| Inhalte | Schluessel, Wert | Seitentexte + about_portrait URL |
 
 ---
 
@@ -63,149 +63,178 @@ const ADMIN_PW = '130892';
 |---------------|-------|--------------|
 | home | Startseite | Hero, Features, CTA |
 | waldbaden | Waldbaden | Konzept, Vorteile, Ablauf |
-| about | Über mich | Bio, Qualifikationen, Philosophie |
+| about | Über mich | Bio, Qualifikationen, Philosophie, Portrait |
 | kurse | Gruppenkurse | Dynamisch aus Sheet geladen |
-| privat | Privatkurse | Anfrage-Formular |
+| privat | Privatkurse | Anfrage-Formular (ohne Unternehmens-Rubrik) |
 | galerie | Galerie | Dynamisch aus Sheet, Fallback: Unsplash |
 | kontakt | Kontakt | Adresse, Telefon, E-Mail |
 | impressum | Impressum | Aus Inhalte-Sheet editierbar |
 | datenschutz | Datenschutz | Aus Inhalte-Sheet editierbar |
+| qr | QR-Code | Website teilen + Download |
 | admin | Admin | Passwortgeschützt |
+
+**Navigation:** QR-Code als Icon-Link in der Desktop-Nav und als "QR-Code teilen" im Hamburger-Menü.
 
 ---
 
-## Buchungssystem (v3)
+## Privatkurse
+
+Angebotskarten: Für Einzelpersonen · Für Gruppen (Unternehmens-Karte entfernt)
+Dropdown-Optionen: Privatkurs (1–2 Personen) · Privatkurs (kleine Gruppe) · Sonstiges
+
+---
+
+## Design-Prinzipien
+
+- **Keine Emojis** in Inhalts-/Feature-Bereichen – elegante SVG-Linien-Icons in Gold
+- **Reduzierte Abstände** zwischen Sektionen
+- **Checkboxen** vollständig selbst gestylt (kein natives Browser-Rendering)
+- **Typografie:** Cormorant Garamond + DM Sans
+- **Farbpalette:** Waldgrün #1c3d28 · Gold #b5893a · Creme #f5ede0
+
+---
+
+## Buchungssystem
 
 ### Gruppenkurse
-Beim Klick auf "Jetzt anmelden" bei einem Kurs öffnet sich ein **Modal-Formular** direkt auf der Seite.
-
-**Felder:**
-- Vorname * / Nachname *
-- E-Mail *
-- Telefonnummer (optional)
-- Freitextfeld / Anmerkungen
-- Checkbox "WhatsApp-Gruppe" → bei Haken: Pflichtfeld Handynummer *
-
-**Apps Script Endpoint:** `action: 'buchung'`
-Schreibt in Anfragen-Sheet mit Typ = `'Buchung: [Kursname]'`.
-Sendet Benachrichtigung an Laura + Bestätigungsmail an Teilnehmer.
+Modal mit: Vorname*, Nachname*, E-Mail*, Telefon (opt.), Anmerkungen, WhatsApp-Checkbox → Handynummer*
+Apps Script Endpoint: `action: 'buchung'`
 
 ### Privatkurse
-Formularfelder:
-- Name * / E-Mail * / Telefon (optional) / Kurstyp / Wunschdatum / Nachricht *
-- Checkbox "WhatsApp-Gruppe" → bei Haken: Pflichtfeld Handynummer *
+Felder: Name*, E-Mail*, Telefon (opt.), Kurstyp (Dropdown), Wunschdatum, Nachricht*, WhatsApp-Checkbox → Handynummer*
+Apps Script Endpoint: `action: 'anfrage'`
 
-**Apps Script Endpoint:** `action: 'anfrage'`
+---
+
+## Galerie – Google Drive Bilder
+
+Gespeichertes URL-Format: `https://drive.google.com/thumbnail?id=FILE_ID&sz=w1200`
+`fixDriveUrl()` konvertiert auch ältere `uc?export=view`-URLs automatisch.
+
+**Wichtig:** Immer die aktuelle `index.html` aus den Claude-Outputs auf GitHub hochladen – nie eine ältere Version. Die APPS_URL und alle Bugfixes gehen sonst verloren.
+
+---
+
+## Profilfoto (Über mich)
+
+Admin → Inhalte → Über mich → Profilfoto
+Key `about_portrait` im Inhalte-Sheet. Sofortige Anzeige ohne Neu-Deployment.
+
+---
+
+## QR-Code-Seite
+
+Route: `#qr` — Desktop-Nav-Icon + Hamburger-Menü.
+Generiert via `api.qrserver.com`. Stilistisch angepasst (weißer Rahmen, Gold-Akzent, Cormorant).
+Nur: QR-Anzeige + "Als Bild speichern"-Button.
+
+---
+
+## E-Mail-Konfiguration
+
+| Mail | An | Reply-To |
+|------|----|----------|
+| Benachrichtigung an Laura | laura.naturlauf@gmail.com | Kunde |
+| Bestätigung an Kunden | Kunde | laura.naturlauf@gmail.com |
+
+**⚠️ FROM-Adresse:** Gmail-Alias einrichten unter lademory92@gmail.com:
+Einstellungen → Konten und Import → "E-Mail senden als" → laura.naturlauf@gmail.com → bestätigen.
 
 ---
 
 ## Admin-Bereich
 
-**URL:** Website öffnen → Footer → "Admin" (kleiner Link) → `#admin`
-**Passwort:** `130892`
+**URL:** `#admin` (Footer-Link) · **Passwort:** `130892`
 
-### Admin-Tabs
-
-**1. Kurse** – Neuen Kurs anlegen / löschen
-
-**2. Galerie** – Foto hochladen (Gerät → Drive) oder URL eintragen / löschen
-
-**3. Inhalte** – Alle Seitentexte editierbar (7 Seiten-Tabs)
+| Tab | Funktion |
+|-----|----------|
+| Kurse | Anlegen / Löschen |
+| Galerie | Upload (Drive) oder URL / Löschen |
+| Inhalte | Alle Seitentexte + Profilfoto (7 Unter-Tabs) |
 
 ---
 
-## UX – Feedback nach Formularabsenden (Bug 3)
+## UX – Formular-Feedback
 
-- Bei **Validierungsfehlern**: Alert-Element scrollt automatisch in den sichtbaren Bereich
-- Bei **erfolgreicher Buchung** (Modal): Toast-Notification unten im Bildschirm, Modal schließt sich
-- Bei **erfolgreicher Privatanfrage**: Alert-Element scrollt in Sichtfeld
+| Situation | Verhalten |
+|-----------|-----------|
+| Validierungsfehler | Alert scrollt in sichtbaren Bereich |
+| Erfolgreiche Buchung (Modal) | Modal schließt, Toast unten (7 Sek.) |
+| Erfolgreiche Privatanfrage | Alert scrollt in Sichtfeld |
 
 ---
 
 ## Apps Script Endpunkte
 
-**GET:**
-- `?action=get&sheet=Kurse` → Kurs-Zeilen als Array
-- `?action=get&sheet=Galerie` → Galerie-Zeilen als Array
-- `?action=getInhalte` → Alle Inhalte als {key: value} Objekt
+**GET:** `?action=get&sheet=Kurse` · `?action=get&sheet=Galerie` · `?action=getInhalte`
 
-**POST (JSON body):**
+**POST:**
 - `{action:'addKurs', name, datum, uhrzeit, ort, treffpunkt, verfueg, preis}`
 - `{action:'addBild', url, alt}`
-- `{action:'addBildFile', base64, mimeType, filename, alt}` → lädt in Drive hoch
+- `{action:'addBildFile', base64, mimeType, filename, alt}` → `{status:'ok', url}`
 - `{action:'updateInhalte', updates:{key:value,...}}`
 - `{action:'deleteRow', sheet, row}`
-- `{action:'anfrage', name, email, phone, type, date, whatsapp, handynummer, message}` → Privatanfrage
-- `{action:'buchung', vorname, nachname, email, phone, kursname, datum, uhrzeit, ort, whatsapp, handynummer, message}` → Gruppenkurs-Buchung
-
----
-
-## E-Mail Absender (Bug 4)
-
-In Code.gs werden alle `MailApp.sendEmail`-Aufrufe mit `from: EMAIL_EMPFAENGER` und `name: 'Laura – Resilienzpfade'` abgesetzt.
-
-> ⚠️ **Wichtig:** Damit die FROM-Adresse wirklich als `laura.naturlauf@gmail.com` erscheint, muss diese Adresse im Google-Konto (lademory92@gmail.com) unter **Gmail → Einstellungen → Konten → E-Mail senden als** als verifizierter Alias eingetragen sein. Ohne Alias-Einrichtung sendet Google automatisch von lademory92@gmail.com, aber `replyTo` zeigt trotzdem auf laura.naturlauf@gmail.com.
+- `{action:'anfrage', name, email, phone, type, date, whatsapp, handynummer, message}`
+- `{action:'buchung', vorname, nachname, email, phone, kursname, datum, uhrzeit, ort, whatsapp, handynummer, message}`
 
 ---
 
 ## Content-System
 
-Texte in Sheet "Inhalte" als Key-Value-Paare. Beim Seitenaufruf geladen, im sessionStorage gecacht.
-
-**Render-Typen:** `text`, `paras`, `list-li`, `qual-list`, `md`
-
----
-
-## Design
-
-- **Typografie:** Cormorant Garamond + DM Sans
-- **Farbpalette:** Waldgrün `#1c3d28`, Gold `#b5893a`, Creme `#f5ede0`
-- **Mobile:** Vollständig responsive, Hamburger-Navigation
+Key-Value in Sheet "Inhalte". Render-Typen: `text` `paras` `list-li` `qual-list` `md` `portrait`
+Portrait-Key: `about_portrait` → Drive-thumbnail-URL
 
 ---
 
 ## Impressum
 
 ```
-Resilienzpfade
-Laura Demory
-Gehrengrabenstraße 1b
-77886 Lauf
-Tel: 0176 31152691
-E-Mail: laura.naturlauf@gmail.com
+Resilienzpfade · Laura Demory
+Gehrengrabenstraße 1b · 77886 Lauf
+Tel: 0176 31152691 · E-Mail: laura.naturlauf@gmail.com
 ```
 
 ---
 
-## Bugfixes v3 (gegenüber v2)
+## Versions-History
 
-1. **Kurs-Buchungsformular:** Klick auf "Jetzt anmelden" öffnet jetzt ein eigenes Modal-Formular (nicht mehr Weiterleitung zu Privatkursen). Felder: Vorname, Nachname, E-Mail, Telefon, Freitext, WhatsApp-Checkbox → Handynummer-Pflichtfeld.
-2. **WhatsApp im Privatanfrage-Formular:** WhatsApp-Checkbox + bedingtes Handynummer-Pflichtfeld ergänzt.
-3. **Erfolgs-/Fehlermeldungen sichtbar:** Nach Absenden scrollt die Meldung automatisch ins Bild (scrollIntoView). Bei Modal-Buchungen: Toast-Notification am unteren Bildrand.
-4. **Absende-E-Mail:** `from: EMAIL_EMPFAENGER` + `name: 'Laura – Resilienzpfade'` in allen MailApp-Aufrufen. Funktioniert vollständig, sobald `laura.naturlauf@gmail.com` als Gmail-Alias im Konto eingetragen ist.
-5. **APPS_URL fest eingetragen:** `https://script.google.com/macros/s/AKfycbyTtp1GQliXe3UQYTe285UoxC3ktuQ_r9rz2BmOL3EEvEeV1wbLaEV0gY61Q8pUexIrGQ/exec`
+| Version | Änderungen |
+|---------|------------|
+| v1 | Grundversion |
+| v2 | Uhrzeit-Format, Bild-Upload, Inhalte-CMS |
+| v3 | Buchungsmodal, WhatsApp-Felder, Toast, APPS_URL |
+| v4 | replyTo-Fix, Gmail-Alias-Anleitung, init()-Bug, onclick-Bug |
+| v5 | Drive-Bilder (thumbnail), © 2026, Portrait-Upload, QR-Seite |
+| v6 | Breaking-Change-Fix; SVG-Icons; Abstände; Custom-Checkbox; QR neu |
+| v7 | Unternehmen-Rubrik entfernt; Paare aus Kurse-Text; Icon Cache-Busting (v=2) |
 
 ---
 
-## Offene Punkte / Mögliche Erweiterungen
+## Offene Punkte
 
-- [ ] Foto-Portrait auf "Über mich"-Seite (aktuell Emoji-Platzhalter)
+- [ ] Gmail-Alias einrichten → FROM-Adresse korrekt
+- [ ] Portrait-Foto hochladen (Admin → Inhalte → Über mich)
 - [ ] Online-Buchungssystem mit Zahlungsintegration
-- [ ] Automatische Erinnerungs-Mails vor Kursbeginn (Apps Script Trigger)
+- [ ] Automatische Erinnerungs-Mails (Apps Script Trigger)
 - [ ] SEO: sitemap.xml + robots.txt
-- [ ] Google Analytics (falls gewünscht, dann Datenschutz anpassen)
-- [ ] Gmail-Alias `laura.naturlauf@gmail.com` in lademory92-Konto eintragen (für korrekten E-Mail-Absender)
 
 ---
 
-## Deployment-Checkliste (Erstkonfiguration)
+## ⚠️ Wichtige Deployment-Hinweise
 
-1. Code.gs in Apps Script einfügen → `setupSheets()` ausführen
-2. Apps Script als Web-App bereitstellen → URL kopieren (bereits in index.html eingetragen)
-3. GitHub Repo: index.html + Header.png + icon.svg hochladen
-4. GitHub Pages aktivieren: Settings → Pages → Branch main / root
-5. Website unter `https://[username].github.io/[repo]/` erreichbar
+**Niemals eine ältere index.html hochladen!** Die aktuelle Datei enthält:
+- APPS_URL (Datenbankverbindung)
+- fixDriveUrl (Galerie-Bilder)
+- Alle Bugfixes seit v1
 
----
+Bei Unsicherheit: immer die zuletzt von Claude ausgegebene index.html verwenden.
 
-*Zuletzt aktualisiert: v3 – Buchungsmodal, WhatsApp-Felder, Toast-Notifications, E-Mail-Absender, APPS_URL fest*
+Favicon-Update: icon.svg ersetzen + in index.html `?v=N` hochzählen → erzwingt Neuladen.
+
+## Deployment-Checkliste
+
+1. Code.gs in Apps Script → `setupSheets()` ausführen
+2. Als Web-App bereitstellen (URL bereits in index.html)
+3. GitHub: `index.html` + `Header.png` + `icon.svg` hochladen
+4. GitHub Pages: Settings → Pages → Branch main / root
+5. Gmail-Alias einrichten
