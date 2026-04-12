@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Resilienzpfade – Waldbaden mit Laura Demory</title>
-<meta name="description" content="Waldbaden in der Region Waiblingen – Gruppen- und Privatkurse mit zertifizierter Guide Laura Demory.">
+<meta name="description" content="Waldbaden im Schwarzwald – Gruppen- und Privatkurse mit zertifizierter Guide Laura Demory. Jetzt Kurs buchen auf resilienzpfade.de">
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -507,7 +507,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     <div class="contact-grid">
       <div class="contact-item"><div class="contact-icon-wrap">📍</div><div><h5>Adresse</h5><p>Resilienzpfade · Laura Demory<br>Gehrengrabenstraße 1b<br>77886 Lauf</p></div></div>
       <div class="contact-item"><div class="contact-icon-wrap">📞</div><div><h5>Telefon</h5><p><a href="tel:017631152691">0176 31152691</a></p></div></div>
-      <div class="contact-item"><div class="contact-icon-wrap">✉️</div><div><h5>E-Mail</h5><p><a href="/cdn-cgi/l/email-protection#076b667275662969667372756b66726147606a666e6b2964686a"><span class="__cf_email__" data-cfemail="e68a87939487c888879293948a879380a6818b878f8ac885898b">[email&#160;protected]</span></a></p></div></div>
+      <div class="contact-item"><div class="contact-icon-wrap">✉️</div><div><h5>E-Mail</h5><p><a class="em-link" data-u="laura.naturlauf" data-d="gmail.com"></a></p></div></div>
     </div>
   </div>
   <footer class="site-footer"><div class="footer-inner"><span>© 2026 Resilienzpfade · Laura Demory</span><div class="footer-links"><a onclick="go('impressum')">Impressum</a><a onclick="go('datenschutz')">Datenschutz</a></div></div></footer>
@@ -519,7 +519,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
   <div class="wrap prose" id="ct-impressum">
     <h3>Angaben gemäß § 5 TMG</h3>
     <p><strong>Resilienzpfade</strong><br>Laura Demory<br>Gehrengrabenstraße 1b<br>77886 Lauf</p>
-    <p><strong>Telefon:</strong> 0176 31152691<br><strong>E-Mail:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="402c213532216e2e213435322c21352600272d21292c6e232f2d">[email&#160;protected]</a></p>
+    <p><strong>Telefon:</strong> 0176 31152691<br><strong>E-Mail:</strong> <a class="em-link" data-u="laura.naturlauf" data-d="gmail.com"></a></p>
     <h3>Haftungsausschluss</h3>
     <p>Die Inhalte dieser Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität können wir keine Gewähr übernehmen.</p>
     <h3>Haftung für Links</h3>
@@ -537,7 +537,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     <h3>1. Datenschutz auf einen Blick</h3>
     <p>Diese Datenschutzerklärung klärt über Art, Umfang und Zweck der Verarbeitung von personenbezogenen Daten auf.</p>
     <h3>2. Verantwortliche Stelle</h3>
-    <p>Laura Demory, Gehrengrabenstraße 1b, 77886 Lauf · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2a464b5f584b04444b5e5f58464b5f4c6a4d474b434604494547">[email&#160;protected]</a></p>
+    <p>Laura Demory, Gehrengrabenstraße 1b, 77886 Lauf · <a class="em-link" data-u="laura.naturlauf" data-d="gmail.com"></a></p>
     <h3>3. Datenerfassung</h3>
     <p>Diese Website verwendet <strong>keine Cookies</strong> und kein Tracking. Daten werden nur über das Kontaktformular erfasst.</p>
     <h3>4. Kontaktformular</h3>
@@ -545,7 +545,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     <h3>5. Hosting</h3>
     <p>Hosting über GitHub Pages. Es können IP-Adressen serverseitig protokolliert werden.</p>
     <h3>6. Ihre Rechte</h3>
-    <p>Auskunft, Berichtigung, Löschung: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c1ada0b4b3a0efafa0b5b4b3ada0b4a781a6aca0a8adefa2aeac">[email&#160;protected]</a></p>
+    <p>Auskunft, Berichtigung, Löschung: <a class="em-link" data-u="laura.naturlauf" data-d="gmail.com"></a></p>
     <h3>7. Beschwerderecht</h3>
     <p>Zuständige Behörde: Landesbeauftragter für Datenschutz Baden-Württemberg.</p>
   </div>
@@ -846,7 +846,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
   <button class="btn btn-sm btn-gold" onclick="dismissCookie()">Verstanden</button>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 /* ─────────────────────────────────────────────────
    ⚠️ NACH DEPLOYMENT HIER EINTRAGEN:
    ───────────────────────────────────────────────── */
@@ -1679,6 +1679,12 @@ function downloadQr() {
   }
   loadContent();
   initQr();
+  // E-Mail-Links aus data-Attributen aufbauen (Cloudflare-Obfuscation umgehen)
+  document.querySelectorAll('a.em-link[data-u][data-d]').forEach(a => {
+    const addr = a.dataset.u + '\u0040' + a.dataset.d;
+    a.href = 'mai' + 'lto:' + addr;
+    a.textContent = addr;
+  });
 })();
 </script>
 </body>
