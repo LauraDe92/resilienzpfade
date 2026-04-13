@@ -581,12 +581,19 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     <!-- TAB: KURSE -->
     <div class="tab-pane active" id="tab-kurse-admin">
       <div class="admin-form-section">
-        <h4>Neuen Kurs anlegen</h4>
+        <h4 id="kurs-form-title">Neuen Kurs anlegen</h4>
         <div id="kurs-alert" style="display:none"></div>
+        <input type="hidden" id="a-kedit-row" value="">
         <div class="field"><label>Kursname *</label><input type="text" id="a-kname" placeholder="z. B. Waldbaden im Frühling"></div>
         <div class="grid-2">
           <div class="field"><label>Datum *</label><input type="date" id="a-kdatum"></div>
-          <div class="field"><label>Uhrzeit</label><input type="time" id="a-kuhrzeit"></div>
+          <div class="field"><label>Uhrzeit</label>
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <input type="time" id="a-kuhrzeit-von" style="flex:1">
+              <span style="color:var(--text-lt);font-size:.85rem;flex-shrink:0">bis</span>
+              <input type="time" id="a-kuhrzeit-bis" style="flex:1">
+            </div>
+          </div>
         </div>
         <div class="grid-2">
           <div class="field"><label>Ort</label><input type="text" id="a-kort" placeholder="z. B. Welzheimer Wald"></div>
@@ -598,7 +605,11 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
             <select id="a-kverfueg"><option value="Verfügbar">Verfügbar</option><option value="Wenige Plätze">Wenige Plätze</option><option value="Ausgebucht">Ausgebucht</option></select>
           </div>
         </div>
-        <button class="btn btn-primary" onclick="saveKurs()">Kurs speichern →</button>
+        <div class="field"><label>Kursinhalt / Beschreibung</label><textarea id="a-kinhalt" placeholder="Was erwartet die Teilnehmer? Was wird gemacht?" style="min-height:90px"></textarea></div>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+          <button class="btn btn-primary" id="kurs-save-btn" onclick="saveKurs()">Kurs speichern →</button>
+          <button class="btn btn-sec" id="kurs-cancel-btn" onclick="cancelEditKurs()" style="display:none">Abbrechen</button>
+        </div>
       </div>
       <h4 style="font-family:var(--fd);font-style:italic;font-size:1.25rem;color:var(--pine);margin-bottom:1rem;font-weight:400">Bestehende Kurse</h4>
       <div id="admin-kurs-list"><div class="spinner">Wird geladen</div></div>
@@ -1136,7 +1147,7 @@ async function loadKurse() {
     if (!rows.length) { empty.style.display='block'; kurseLoaded=true; return; }
     grid.style.display = 'grid';
     rows.forEach(row => {
-      const [name,datum,uhrzeit,ort,treffpunkt,verfueg,preis] = row;
+      const [name,datum,uhrzeit,ort,treffpunkt,verfueg,preis,kursinhalt] = row;
       const cls    = verfueg==='Ausgebucht'?'avail-full':verfueg==='Wenige Plätze'?'avail-few':'avail-ok';
       const booked = verfueg==='Ausgebucht';
       const card   = document.createElement('div');
@@ -1148,10 +1159,11 @@ async function loadKurse() {
         </div>
         <div class="course-card-body">
           ${datum      ?`<div class="course-detail"><span class="lbl">📅 Datum</span><span>${esc(fmtDate(datum))}</span></div>`:''}
-          ${uhrzeit    ?`<div class="course-detail"><span class="lbl">🕐 Uhrzeit</span><span>${esc(uhrzeit)} Uhr</span></div>`:''}
+          ${uhrzeit    ?`<div class="course-detail"><span class="lbl">🕐 Uhrzeit</span><span>${esc(uhrzeit)}</span></div>`:''}
           ${ort        ?`<div class="course-detail"><span class="lbl">🌲 Ort</span><span>${esc(ort)}</span></div>`:''}
           ${treffpunkt ?`<div class="course-detail"><span class="lbl">📍 Treffpunkt</span><span>${esc(treffpunkt)}</span></div>`:''}
           ${preis      ?`<div class="course-detail"><span class="lbl">💶 Preis</span><span>${esc(fmtPreis(preis))}</span></div>`:''}
+          ${kursinhalt ?`<div class="course-detail" style="border-bottom:none"><span class="lbl">📋 Inhalt</span><span style="white-space:pre-line">${esc(kursinhalt)}</span></div>`:''}
         </div>
         <div class="course-card-footer">
           <button class="btn btn-primary btn-sm kurs-buchung-btn" ${booked?'disabled':''}>
@@ -1507,23 +1519,79 @@ function switchTab(btn) {
 }
 
 async function saveKurs() {
-  const al=document.getElementById('kurs-alert');
-  const name=document.getElementById('a-kname').value.trim();
-  const datum=document.getElementById('a-kdatum').value;
+  const al   = document.getElementById('kurs-alert');
+  const name = document.getElementById('a-kname').value.trim();
+  const datum= document.getElementById('a-kdatum').value;
   if(!name||!datum){showAlert(al,'error','Name und Datum sind Pflichtfelder.');return;}
-  showAlert(al,'info','Wird gespeichert …');
+
+  // Uhrzeit zusammenbauen
+  const von = document.getElementById('a-kuhrzeit-von').value;
+  const bis = document.getElementById('a-kuhrzeit-bis').value;
+  const uhrzeit = von && bis ? von + ' – ' + bis : (von || bis || '');
+
+  const payload = {
+    name, datum, uhrzeit,
+    ort:       document.getElementById('a-kort').value.trim(),
+    treffpunkt:document.getElementById('a-ktreff').value.trim(),
+    preis:     document.getElementById('a-kpreis').value.trim(),
+    verfueg:   document.getElementById('a-kverfueg').value,
+    kursinhalt:document.getElementById('a-kinhalt').value.trim(),
+  };
+
+  const editRow = document.getElementById('a-kedit-row').value;
+  const isEdit  = !!editRow;
+
+  showAlert(al,'info', isEdit ? 'Wird aktualisiert …' : 'Wird gespeichert …');
   try {
-    await appsPost({ action:'addKurs', name, datum,
-      uhrzeit:document.getElementById('a-kuhrzeit').value,
-      ort:document.getElementById('a-kort').value.trim(),
-      treffpunkt:document.getElementById('a-ktreff').value.trim(),
-      preis:document.getElementById('a-kpreis').value.trim(),
-      verfueg:document.getElementById('a-kverfueg').value });
-    showAlert(al,'success','✓ Kurs gespeichert!');
-    ['a-kname','a-kdatum','a-kuhrzeit','a-kort','a-ktreff','a-kpreis'].forEach(id=>document.getElementById(id).value='');
+    if (isEdit) {
+      await appsPost({ action:'updateKurs', row: parseInt(editRow), ...payload });
+      showAlert(al,'success','✓ Kurs aktualisiert!');
+    } else {
+      await appsPost({ action:'addKurs', ...payload });
+      showAlert(al,'success','✓ Kurs gespeichert!');
+    }
+    resetKursForm();
     kurseLoaded=false; document.getElementById('kurse-grid').innerHTML='';
     setTimeout(loadAdminKurse,700);
   } catch(e){showAlert(al,'error','Fehler: '+e.message);}
+}
+
+function resetKursForm() {
+  ['a-kname','a-kdatum','a-kuhrzeit-von','a-kuhrzeit-bis','a-kort','a-ktreff','a-kpreis','a-kinhalt']
+    .forEach(id => document.getElementById(id).value='');
+  document.getElementById('a-kverfueg').value='Verfügbar';
+  document.getElementById('a-kedit-row').value='';
+  document.getElementById('kurs-form-title').textContent='Neuen Kurs anlegen';
+  document.getElementById('kurs-save-btn').textContent='Kurs speichern →';
+  document.getElementById('kurs-cancel-btn').style.display='none';
+}
+
+function cancelEditKurs() {
+  resetKursForm();
+  document.getElementById('kurs-alert').style.display='none';
+}
+
+function editKurs(row, data) {
+  // Formular nach oben scrollen
+  document.getElementById('kurs-form-title').scrollIntoView({behavior:'smooth', block:'start'});
+  // Felder füllen
+  document.getElementById('a-kname').value    = data.name        || '';
+  document.getElementById('a-kdatum').value   = data.datum       || '';
+  document.getElementById('a-kort').value     = data.ort         || '';
+  document.getElementById('a-ktreff').value   = data.treffpunkt  || '';
+  document.getElementById('a-kpreis').value   = data.preis       || '';
+  document.getElementById('a-kverfueg').value = data.verfueg     || 'Verfügbar';
+  document.getElementById('a-kinhalt').value  = data.kursinhalt  || '';
+  // Uhrzeit aufsplitten (Format: "10:00 – 12:00" oder "10:00")
+  const uhrzeitRaw = data.uhrzeit || '';
+  const parts = uhrzeitRaw.split(/\s*[–-]\s*/);
+  document.getElementById('a-kuhrzeit-von').value = parts[0] ? parts[0].trim() : '';
+  document.getElementById('a-kuhrzeit-bis').value = parts[1] ? parts[1].trim() : '';
+  // Edit-Modus aktivieren
+  document.getElementById('a-kedit-row').value = row;
+  document.getElementById('kurs-form-title').textContent = 'Kurs bearbeiten';
+  document.getElementById('kurs-save-btn').textContent = 'Änderungen speichern →';
+  document.getElementById('kurs-cancel-btn').style.display = 'inline-flex';
 }
 
 async function loadAdminKurse() {
@@ -1536,14 +1604,25 @@ async function loadAdminKurse() {
     const rows=(data.values||[]).slice(1).filter(r=>r[0]);
     if(!rows.length){list.innerHTML='<p style="color:var(--text-lt);padding:1rem 0">Noch keine Kurse.</p>';return;}
     rows.forEach((row,idx)=>{
+      const [name,datum,uhrzeit,ort,treffpunkt,verfueg,preis,kursinhalt] = row;
+      const rowNum = idx + 2;
       const el=document.createElement('div');
       el.className='admin-list-item';
       el.innerHTML=`
         <div class="admin-list-item-info">
-          <h5>${esc(row[0])}</h5>
-          <small>${esc(fmtDate(row[1]))}${row[2]?' · '+row[2]+' Uhr':''}${row[3]?' · '+row[3]:''}${row[5]?' · '+row[5]:''}</small>
+          <h5>${esc(name)}</h5>
+          <small>${esc(fmtDate(datum))}${uhrzeit?' · '+uhrzeit:''}${ort?' · '+ort:''}${verfueg?' · '+verfueg:''}</small>
         </div>
-        <button class="btn btn-sm btn-danger" onclick="deleteRow('Kurse',${idx+2},this)">Löschen</button>`;
+        <div style="display:flex;gap:.4rem;flex-shrink:0">
+          <button class="btn btn-sm btn-sec edit-btn">Bearbeiten</button>
+          <button class="btn btn-sm btn-danger del-btn">Löschen</button>
+        </div>`;
+      el.querySelector('.edit-btn').addEventListener('click', () => {
+        editKurs(rowNum, {name,datum,uhrzeit,ort,treffpunkt,verfueg,preis,kursinhalt});
+      });
+      el.querySelector('.del-btn').addEventListener('click', function() {
+        deleteRow('Kurse', rowNum, this);
+      });
       list.appendChild(el);
     });
   } catch(e){list.innerHTML=`<div class="alert alert-error">Ladefehler: ${esc(e.message)}</div>`;}
