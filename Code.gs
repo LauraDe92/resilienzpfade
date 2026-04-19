@@ -1,6 +1,6 @@
 /**
  * ╔══════════════════════════════════════════════════════════╗
- * ║  Resilienzpfade – Waldbaden · Google Apps Script v2      ║
+ * ║  Resilienzpfade – Waldbaden · Google Apps Script v3      ║
  * ╚══════════════════════════════════════════════════════════╝
  *
  * SETUP (einmalig):
@@ -8,7 +8,26 @@
  * 2. Funktion "setupSheets" ausführen → legt alle Sheets + Drive-Ordner an
  * 3. Bereitstellen → Neue Bereitstellung → Web-App
  *    · Ausführen als: Ich  |  Zugriff: Jeder
- * 4. URL in index.html bei APPS_URL eintragen
+ * 4. URL ist bereits in index.html eingetragen.
+ *
+ * ─────────────────────────────────────────────────────────
+ * ⚠️  E-MAIL ABSENDER: Einmalige Gmail-Einrichtung nötig
+ * ─────────────────────────────────────────────────────────
+ * Das Script läuft unter dem Google-Konto lademory92@gmail.com.
+ * Damit E-Mails als "laura.naturlauf@gmail.com" erscheinen:
+ *
+ *  1. Gmail öffnen (lademory92@gmail.com)
+ *  2. Einstellungen (Zahnrad) → „Alle Einstellungen aufrufen"
+ *  3. Tab „Konten und Import"
+ *  4. Abschnitt „E-Mail senden als" → „Weitere E-Mail-Adresse hinzufügen"
+ *  5. Name: Laura Demory  |  Adresse: laura.naturlauf@gmail.com
+ *  6. „Als Alias behandeln" aktiviert lassen → Weiter
+ *  7. Bestätigungsmail an laura.naturlauf@gmail.com abwarten,
+ *     darin auf den Link klicken → fertig.
+ *
+ * Danach sendet dieses Script automatisch von laura.naturlauf@gmail.com.
+ * Reply-To ist bereits korrekt gesetzt (s.u.) – Kundenantworten
+ * landen somit sofort im richtigen Postfach.
  */
 
 const SHEET_ID         = '171ttO0cWO0rhjWjyWX0h7-0evVzI-RfQMPu0w_JL2vU';
@@ -118,7 +137,64 @@ function doPost(e) {
         data.name||'', data.datum||'', data.uhrzeit||'',
         data.ort||'', data.treffpunkt||'',
         data.verfueg||'Verfügbar', data.preis||'',
+        data.kursinhalt||'',
       ]);
+
+      // Newsletter-Abonnenten über neuen Kurs informieren
+      try {
+        const nlSheet = getSheet(ss, 'Newsletter');
+        const nlRows  = nlSheet.getDataRange().getValues().slice(1);
+        const kursInfo = [
+          data.name   || '',
+          data.datum  ? 'Datum: ' + data.datum   : '',
+          data.uhrzeit? 'Zeit: '  + data.uhrzeit : '',
+          data.ort    ? 'Ort: '   + data.ort     : '',
+          data.preis  ? 'Preis: ' + data.preis + ' €' : '',
+        ].filter(Boolean).join('\n');
+
+        nlRows.forEach(function(row) {
+          const nlMail = row[2] || '';
+          const nlName = (row[1] || '').split(' ')[0] || 'Hallo';
+          if (!nlMail || nlMail.indexOf('@') === -1) return;
+          try {
+            MailApp.sendEmail({
+              to:      nlMail,
+              from:    EMAIL_EMPFAENGER,
+              name:    'Laura – Resilienzpfade',
+              replyTo: EMAIL_EMPFAENGER,
+              subject: 'Neuer Kurs: ' + (data.name || 'Waldbaden'),
+              body: [
+                'Hallo ' + nlName + ',\n',
+                'es gibt einen neuen Kurs auf resilienzpfade.de – genau das, wofür du dich angemeldet hast:\n',
+                kursInfo,
+                data.kursinhalt ? '\n' + data.kursinhalt : '',
+                '\nJetzt anmelden: https://resilienzpfade.de\n',
+                'Bis bald im Wald,\nLaura\n',
+                '─────────────────────────',
+                'Resilienzpfade · Laura Demory',
+                'laura.naturlauf@gmail.com · 0176 31152691',
+                '\nDu erhältst diese E-Mail, weil du dich bei einer Kursanmeldung für Benachrichtigungen eingetragen hast.',
+              ].filter(Boolean).join('\n'),
+            });
+          } catch(mailErr) { Logger.log('NL-Mail an ' + nlMail + ': ' + mailErr.message); }
+        });
+      } catch(nlErr) { Logger.log('Newsletter-Versand: ' + nlErr.message); }
+
+      return jsonResponse({ status:'ok' });
+    }
+
+    // ── Kurs aktualisieren ────────────────────────────────────
+    if (action === 'updateKurs') {
+      const rowNum = parseInt(data.row);
+      if (isNaN(rowNum) || rowNum < 2) throw new Error('Ungültige Zeilennummer');
+      const sheet = getSheet(ss, 'Kurse');
+      if (rowNum > sheet.getLastRow()) throw new Error('Zeile nicht vorhanden');
+      sheet.getRange(rowNum, 1, 1, 8).setValues([[
+        data.name||'', data.datum||'', data.uhrzeit||'',
+        data.ort||'', data.treffpunkt||'',
+        data.verfueg||'Verfügbar', data.preis||'',
+        data.kursinhalt||'',
+      ]]);
       return jsonResponse({ status:'ok' });
     }
 
@@ -141,7 +217,7 @@ function doPost(e) {
       const file     = folder.createFile(blob);
       file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
 
-      const url = 'https://drive.google.com/uc?export=view&id=' + file.getId();
+      const url = 'https://drive.google.com/thumbnail?id=' + file.getId() + '&sz=w1200';
       getSheet(ss,'Galerie').appendRow([url, data.alt||filename]);
       return jsonResponse({ status:'ok', url: url });
     }
@@ -220,6 +296,7 @@ function doPost(e) {
             to:      data.email,
             from:    EMAIL_EMPFAENGER,
             name:    'Laura – Resilienzpfade',
+            replyTo: EMAIL_EMPFAENGER,
             subject: 'Deine Anfrage ist angekommen – Resilienzpfade',
             body: [
               'Hallo ' + ((data.name||'').split(' ')[0]) + ',\n',
@@ -254,10 +331,19 @@ function doPost(e) {
         ]);
       } catch(sheetErr) { Logger.log('Buchungen-Sheet: ' + sheetErr.message); }
 
+      // Newsletter-Eintrag speichern
+      if (data.newsletter && data.email && data.email.indexOf('@') !== -1) {
+        try {
+          const nlSheet = getSheet(ss, 'Newsletter');
+          // Duplikat-Prüfung
+          const existing = nlSheet.getDataRange().getValues().slice(1).map(r => r[2]);
+          if (existing.indexOf(data.email) === -1) {
+            nlSheet.appendRow([new Date().toLocaleString('de-DE'), name, data.email]);
+          }
+        } catch(nlErr) { Logger.log('Newsletter-Eintrag: ' + nlErr.message); }
+      }
+
       MailApp.sendEmail({
-        to:      EMAIL_EMPFAENGER,
-        from:    EMAIL_EMPFAENGER,
-        name:    'Resilienzpfade · Buchung',
         subject: '[Resilienzpfade] Neue Buchung: ' + (data.kursname||'Gruppenkurs') + ' – ' + name,
         body: [
           'Neue Kursbuchung über Resilienzpfade:\n',
@@ -280,6 +366,7 @@ function doPost(e) {
             to:      data.email,
             from:    EMAIL_EMPFAENGER,
             name:    'Laura – Resilienzpfade',
+            replyTo: EMAIL_EMPFAENGER,
             subject: 'Deine Anmeldung ist angekommen – ' + (data.kursname||'Kurs'),
             body: [
               'Hallo ' + (data.vorname||name) + ',\n',
@@ -315,7 +402,8 @@ function setupSheets() {
 
   // Tabellenblätter
   var sheets = [
-    { name:'Kurse',    headers:['Name','Datum','Uhrzeit','Ort','Treffpunkt','Verfuegbarkeit','Preis'] },
+    { name:'Kurse',      headers:['Name','Datum','Uhrzeit','Ort','Treffpunkt','Verfuegbarkeit','Preis','Kursinhalt'] },
+    { name:'Newsletter', headers:['Datum','Name','Email'] },
     { name:'Galerie',  headers:['URL','Alt-Text'] },
     { name:'Anfragen', headers:['Datum','Name','Email','Telefon','Typ','Wunschdatum','Nachricht'] },
     { name:'Inhalte',  headers:['Schluessel','Wert'] },
