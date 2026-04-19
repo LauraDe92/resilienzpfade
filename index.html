@@ -248,12 +248,11 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
 
 /* WHATSAPP CHECKBOX FIELD */
 .checkbox-field{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1.2rem;cursor:pointer;user-select:none}
-.checkbox-field input[type=checkbox]{position:absolute;opacity:0;width:0;height:0}
-.checkbox-custom{width:20px;height:20px;min-width:20px;border:1.5px solid var(--sage);background:var(--cream);border-radius:2px;margin-top:.15rem;display:flex;align-items:center;justify-content:center;transition:background .18s,border-color .18s;flex-shrink:0}
-.checkbox-field input[type=checkbox]:checked + .checkbox-custom{background:var(--pine);border-color:var(--pine)}
-.checkbox-custom::after{content:'';display:none;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(42deg) translate(-1px,-1px)}
-.checkbox-field input[type=checkbox]:checked + .checkbox-custom::after{display:block}
-.checkbox-field .cb-label{font-size:.82rem;letter-spacing:.06em;color:var(--text-mid);line-height:1.5;padding-top:.1rem}
+.checkbox-field input[type=checkbox]{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.checkbox-custom{width:20px;height:20px;min-width:20px;border:2px solid var(--sage);background:#fff;border-radius:3px;margin-top:.15rem;display:flex;align-items:center;justify-content:center;transition:background .18s,border-color .18s;flex-shrink:0;position:relative}
+.checkbox-custom.checked{background:var(--pine);border-color:var(--pine)}
+.checkbox-custom.checked::after{content:'';position:absolute;width:5px;height:9px;border:2.5px solid #fff;border-top:none;border-left:none;transform:rotate(42deg) translate(0px,-1px)}
+.checkbox-field .cb-label{font-size:.88rem;letter-spacing:.02em;color:var(--text);line-height:1.5;padding-top:.1rem}
 .checkbox-field .cb-label strong{color:var(--pine);font-weight:500}
 
 /* TOAST NOTIFICATION (Bug 3) */
@@ -268,6 +267,10 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
 .qr-frame img{width:220px;height:220px;display:block;image-rendering:crisp-edges}
 .qr-frame-logo{font-family:var(--fd);font-size:1rem;font-style:italic;color:var(--pine);letter-spacing:.03em}
 .qr-rule{width:40px;height:1.5px;background:var(--gold)}
+/* BUCHUNGS-MODAL Info-Boxen */
+.bm-info-boxes{display:flex;flex-direction:column;gap:.75rem;margin:.5rem 0 1.25rem}
+.bm-info-box{background:var(--cream);border-left:3px solid var(--sage);padding:.85rem 1rem;font-size:.8rem;color:var(--text-mid);line-height:1.55}
+.bm-info-box strong{display:block;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--pine);margin-bottom:.35rem;font-weight:500}
 </style>
 </head>
 <body>
@@ -476,7 +479,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
       <div class="field"><label>Wunschdatum / Zeitraum</label><input type="text" id="p-date" placeholder="z. B. Mai 2025, Wochenende bevorzugt"></div>
       <div class="field"><label>Deine Nachricht *</label><textarea id="p-msg" placeholder="Erzähl mir ein bisschen von dir und deinen Wünschen …"></textarea></div>
       <label class="checkbox-field">
-        <input type="checkbox" id="p-whatsapp" onchange="toggleWaField('p-wa-wrap')">
+        <input type="checkbox" id="p-whatsapp">
         <span class="checkbox-custom"></span>
         <span class="cb-label">Ich möchte an der <strong>WhatsApp-Gruppe</strong> zum Kurs teilnehmen</span>
       </label>
@@ -661,6 +664,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
         <button class="cpn-btn" onclick="showContentPage('about',this)">Über mich</button>
         <button class="cpn-btn" onclick="showContentPage('privat',this)">Privatkurse</button>
         <button class="cpn-btn" onclick="showContentPage('kontakt',this)">Kontakt</button>
+        <button class="cpn-btn" onclick="showContentPage('buchung',this)">Buchung</button>
         <button class="cpn-btn" onclick="showContentPage('impressum',this)">Impressum</button>
         <button class="cpn-btn" onclick="showContentPage('datenschutz',this)">Datenschutz</button>
       </div>
@@ -766,7 +770,20 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
         <button class="btn btn-primary" onclick="saveContentPage('kontakt')">Kontakt speichern →</button>
       </div>
 
-      <!-- Impressum -->
+      <!-- Buchung -->
+      <div class="content-section" id="cs-buchung">
+        <div class="admin-form-section">
+          <h4>Haftungsausschluss</h4>
+          <small style="color:var(--text-lt);display:block;margin-bottom:.5rem">Wird im Anmelde-Formular der Gruppenkurse angezeigt.</small>
+          <div class="content-field"><textarea data-ck="buchung_haftung" style="min-height:110px"></textarea></div>
+        </div>
+        <div class="admin-form-section">
+          <h4>Kosten</h4>
+          <small style="color:var(--text-lt);display:block;margin-bottom:.5rem">Wird im Anmelde-Formular der Gruppenkurse angezeigt.</small>
+          <div class="content-field"><textarea data-ck="buchung_kosten" style="min-height:110px"></textarea></div>
+        </div>
+        <button class="btn btn-primary" onclick="saveContentPage('buchung')">Buchungs-Texte speichern →</button>
+      </div>
       <div class="content-section" id="cs-impressum">
         <div class="admin-form-section">
           <h4>Impressum</h4>
@@ -833,12 +850,21 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
     <div class="field"><label>Telefonnummer (optional)</label><input type="tel" id="bm-phone" placeholder="+49 …" autocomplete="tel"></div>
     <div class="field"><label>Nachricht / Anmerkungen</label><textarea id="bm-msg" style="min-height:90px" placeholder="z. B. Fragen, Besonderheiten …"></textarea></div>
     <label class="checkbox-field">
-      <input type="checkbox" id="bm-whatsapp" onchange="toggleWaField('bm-wa-wrap')">
+      <input type="checkbox" id="bm-whatsapp">
       <span class="checkbox-custom"></span>
       <span class="cb-label">Ich möchte an der <strong>WhatsApp-Gruppe</strong> zum Kurs teilnehmen</span>
     </label>
     <div id="bm-wa-wrap" style="display:none">
       <div class="field"><label>Handynummer * (für WhatsApp)</label><input type="tel" id="bm-handynummer" placeholder="+49 176 …"></div>
+    </div>
+    <label class="checkbox-field" style="margin-bottom:1.5rem">
+      <input type="checkbox" id="bm-newsletter">
+      <span class="checkbox-custom"></span>
+      <span class="cb-label">Ich möchte per E-Mail informiert werden, wenn neue Kurse verfügbar sind</span>
+    </label>
+    <div class="bm-info-boxes">
+      <div class="bm-info-box"><strong id="bm-haftung-title">Haftungsausschluss</strong><span id="bm-haftung-text"></span></div>
+      <div class="bm-info-box"><strong id="bm-kosten-title">Kosten</strong><span id="bm-kosten-text"></span></div>
     </div>
     <button class="btn btn-primary" style="width:100%;justify-content:center" id="bm-submit-btn" onclick="sendKursBuchung()">Jetzt anmelden →</button>
   </div>
@@ -899,8 +925,10 @@ const CT = {
   privat_ax2:   { id:'ct-privat-ax2',   type:'text' },
   privat_at3:   { id:'ct-privat-at3',   type:'text' },
   privat_ax3:   { id:'ct-privat-ax3',   type:'text' },
-  kontakt_intro:{ id:'ct-kontakt-intro',type:'text' },
-  about_portrait: { id:'about-portrait-wrap', type:'portrait' },
+  kontakt_intro:    { id:'ct-kontakt-intro',   type:'text' },
+  buchung_haftung:  { id:'bm-haftung-text',    type:'text' },
+  buchung_kosten:   { id:'bm-kosten-text',     type:'text' },
+  about_portrait:   { id:'about-portrait-wrap', type:'portrait' },
   impressum_text:  { id:'ct-impressum',    type:'md' },
   datenschutz_text:{ id:'ct-datenschutz',  type:'md' },
 };
@@ -912,6 +940,7 @@ const PAGE_KEYS = {
   about:       ['about_portrait','about_bio','about_qual','about_phil'],
   privat:      ['privat_intro','privat_at1','privat_ax1','privat_at2','privat_ax2','privat_at3','privat_ax3'],
   kontakt:     ['kontakt_intro'],
+  buchung:     ['buchung_haftung','buchung_kosten'],
   impressum:   ['impressum_text'],
   datenschutz: ['datenschutz_text'],
 };
@@ -929,7 +958,7 @@ function go(page) {
   currentPage = page;
   window.scrollTo({ top:0, behavior:'instant' });
   closeMenu(); updateNav(page);
-  history.pushState({ page }, '', '#' + page);
+  try { history.pushState({ page }, '', '#' + page); } catch(e) {}
   if (page === 'kurse'   && !kurseLoaded)   loadKurse();
   if (page === 'galerie' && !galerieLoaded) loadGalerie();
   if (page === 'qr')                        initQr();
@@ -1181,8 +1210,38 @@ async function loadKurse() {
     kurseLoaded = true;
   } catch(e) {
     spin.style.display='none';
-    errEl.style.display='block';
-    errEl.textContent='Kurse konnten nicht geladen werden. Bitte schreib mir direkt: laura.naturlauf@gmail.com';
+    // Vorschau-Modus (Apps Script nicht erreichbar): Beispieldaten zeigen
+    const mockRows = [
+      ['Waldbaden im Frühling','2026-05-10','09:00 – 12:00','Welzheimer Wald','Parkplatz Waldstadion','Verfügbar','45','Achtsames Wandern, Atemübungen und stilles Verweilen im Frühlingswald.'],
+      ['Sommerabend-Waldbaden','2026-07-18','17:30 – 20:00','Schwarzwald bei Lauf','Forsthaus Eingang','Wenige Plätze','40','Goldene Abendstimmung im Wald – Ruhe und Naturverbindung zum Feierabend.'],
+    ];
+    grid.style.display = 'grid';
+    mockRows.forEach(row => {
+      const [name,datum,uhrzeit,ort,treffpunkt,verfueg,preis,kursinhalt] = row;
+      const cls  = verfueg==='Ausgebucht'?'avail-full':verfueg==='Wenige Plätze'?'avail-few':'avail-ok';
+      const card = document.createElement('div');
+      card.className = 'course-card';
+      card.innerHTML = `
+        <div class="course-card-top">
+          <h4>${esc(name)}</h4>
+          <span class="avail-badge ${cls}">${esc(verfueg)}</span>
+        </div>
+        <div class="course-card-body">
+          <div class="course-detail"><span class="lbl">📅 Datum</span><span>${esc(fmtDate(datum))}</span></div>
+          <div class="course-detail"><span class="lbl">🕐 Uhrzeit</span><span>${esc(uhrzeit)}</span></div>
+          <div class="course-detail"><span class="lbl">🌲 Ort</span><span>${esc(ort)}</span></div>
+          <div class="course-detail"><span class="lbl">💶 Preis</span><span>${esc(fmtPreis(preis))}</span></div>
+          <div class="course-detail" style="border-bottom:none"><span class="lbl">📋 Inhalt</span><span>${esc(kursinhalt)}</span></div>
+        </div>
+        <div class="course-card-footer">
+          <button class="btn btn-primary btn-sm kurs-buchung-btn">Jetzt anmelden →</button>
+        </div>`;
+      card.querySelector('.kurs-buchung-btn').addEventListener('click', () => {
+        openKursBuchung(name, datum, uhrzeit, ort);
+      });
+      grid.appendChild(card);
+    });
+    kurseLoaded = true;
   }
 }
 
@@ -1337,15 +1396,33 @@ function showToast(type, msg, duration) {
 }
 
 /* ─────────────────────────────────────────────────
-   WHATSAPP TOGGLE (Bug 1 & 2)
+   CHECKBOX – visuelles Styling via change-Event
    ───────────────────────────────────────────────── */
+function initCheckboxes() {
+  document.querySelectorAll('.checkbox-field input[type=checkbox]').forEach(function(input) {
+    // Visuellen Haken synchronisieren
+    input.addEventListener('change', function() {
+      const box = this.nextElementSibling;
+      if (box && box.classList.contains('checkbox-custom')) {
+        box.classList.toggle('checked', this.checked);
+      }
+      // WhatsApp-Felder ein/ausblenden
+      if (this.id === 'p-whatsapp')  toggleWaField('p-wa-wrap');
+      if (this.id === 'bm-whatsapp') toggleWaField('bm-wa-wrap');
+    });
+  });
+}
+
 function toggleWaField(wrapId) {
-  const wrap = document.getElementById(wrapId);
   const checkId = wrapId === 'bm-wa-wrap' ? 'bm-whatsapp' : 'p-whatsapp';
-  wrap.style.display = document.getElementById(checkId).checked ? 'block' : 'none';
-  if (!document.getElementById(checkId).checked) {
+  const wrap  = document.getElementById(wrapId);
+  const input = document.getElementById(checkId);
+  if (!wrap || !input) return;
+  wrap.style.display = input.checked ? 'block' : 'none';
+  if (!input.checked) {
     const phoneId = wrapId === 'bm-wa-wrap' ? 'bm-handynummer' : 'p-handynummer';
-    document.getElementById(phoneId).value = '';
+    const ph = document.getElementById(phoneId);
+    if (ph) ph.value = '';
   }
 }
 
@@ -1364,7 +1441,15 @@ function openKursBuchung(name, datum, uhrzeit, ort) {
     const el = document.getElementById(id); if (el) el.value = '';
   });
   document.getElementById('bm-whatsapp').checked = false;
+  document.getElementById('bm-newsletter').checked = false;
   document.getElementById('bm-wa-wrap').style.display = 'none';
+  document.querySelectorAll('#buchung-modal .checkbox-custom').forEach(b => b.classList.remove('checked'));
+  // Infoboxen aus Content-Cache befüllen (mit Fallback-Dummy-Text)
+  const cc = JSON.parse(sessionStorage.getItem('rp_content') || '{}');
+  document.getElementById('bm-haftung-text').textContent =
+    cc['buchung_haftung'] || 'Die Teilnahme erfolgt auf eigene Verantwortung. Laura Demory haftet nicht für Schäden, die durch mangelnde Fitness, Vorerkrankungen oder Unachtsamkeit entstehen. Bitte informiere mich vorab über gesundheitliche Einschränkungen.';
+  document.getElementById('bm-kosten-text').textContent =
+    cc['buchung_kosten'] || 'Der Kurspreis ist spätestens am Kurstag in bar oder per Überweisung zu begleichen. Bei Stornierung bis 48 Stunden vor Kursbeginn erfolgt eine vollständige Rückerstattung. Danach ist keine Rückerstattung möglich.';
   document.getElementById('bm-alert').style.display = 'none';
   document.getElementById('bm-submit-btn').disabled = false;
   document.getElementById('buchung-modal').classList.add('open');
@@ -1383,8 +1468,9 @@ async function sendKursBuchung() {
   const vorname  = document.getElementById('bm-vorname').value.trim();
   const nachname = document.getElementById('bm-nachname').value.trim();
   const mail     = document.getElementById('bm-email').value.trim();
-  const waChecked = document.getElementById('bm-whatsapp').checked;
-  const handy    = document.getElementById('bm-handynummer').value.trim();
+  const waChecked  = document.getElementById('bm-whatsapp').checked;
+  const handy      = document.getElementById('bm-handynummer').value.trim();
+  const newsletter = document.getElementById('bm-newsletter').checked;
 
   if (!vorname || !nachname || !mail) {
     showAlert(al, 'error', 'Bitte alle Pflichtfelder (*) ausfüllen.');
@@ -1421,6 +1507,7 @@ async function sendKursBuchung() {
       ort:       _buchungKurs.ort || '',
       whatsapp:  waChecked,
       handynummer: waChecked ? handy : '',
+      newsletter,
       message:   msg,
     });
     closeKursBuchung();
@@ -1758,6 +1845,7 @@ function downloadQr() {
   }
   loadContent();
   initQr();
+  initCheckboxes();
   // E-Mail-Links aus data-Attributen aufbauen (Cloudflare-Obfuscation umgehen)
   document.querySelectorAll('a.em-link[data-u][data-d]').forEach(a => {
     const addr = a.dataset.u + '\u0040' + a.dataset.d;
