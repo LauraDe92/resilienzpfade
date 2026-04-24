@@ -773,6 +773,11 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
       <!-- Buchung -->
       <div class="content-section" id="cs-buchung">
         <div class="admin-form-section">
+          <h4>Hinweise zum Kurs</h4>
+          <small style="color:var(--text-lt);display:block;margin-bottom:.5rem">Wird als erster Block im Anmelde-Formular angezeigt (z. B. Ausrüstung, Wetter, Treffpunkt-Infos).</small>
+          <div class="content-field"><textarea data-ck="buchung_hinweise" style="min-height:110px"></textarea></div>
+        </div>
+        <div class="admin-form-section">
           <h4>Haftungsausschluss</h4>
           <small style="color:var(--text-lt);display:block;margin-bottom:.5rem">Wird im Anmelde-Formular der Gruppenkurse angezeigt.</small>
           <div class="content-field"><textarea data-ck="buchung_haftung" style="min-height:110px"></textarea></div>
@@ -781,6 +786,22 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
           <h4>Kosten</h4>
           <small style="color:var(--text-lt);display:block;margin-bottom:.5rem">Wird im Anmelde-Formular der Gruppenkurse angezeigt.</small>
           <div class="content-field"><textarea data-ck="buchung_kosten" style="min-height:110px"></textarea></div>
+        </div>
+        <div class="admin-form-section">
+          <h4>Newsletter-E-Mail bei neuem Kurs</h4>
+          <small style="color:var(--text-lt);display:block;margin-bottom:.75rem">
+            Wird automatisch verschickt, wenn du einen neuen Kurs anlegst.<br>
+            Verfügbare Platzhalter:
+            <code style="background:var(--parchment);padding:.1rem .35rem;border-radius:2px;font-size:.78rem">{vorname}</code>
+            <code style="background:var(--parchment);padding:.1rem .35rem;border-radius:2px;font-size:.78rem">{kursname}</code>
+            <code style="background:var(--parchment);padding:.1rem .35rem;border-radius:2px;font-size:.78rem">{datum}</code>
+            <code style="background:var(--parchment);padding:.1rem .35rem;border-radius:2px;font-size:.78rem">{uhrzeit}</code>
+            <code style="background:var(--parchment);padding:.1rem .35rem;border-radius:2px;font-size:.78rem">{ort}</code>
+            <code style="background:var(--parchment);padding:.1rem .35rem;border-radius:2px;font-size:.78rem">{preis}</code>
+            <code style="background:var(--parchment);padding:.1rem .35rem;border-radius:2px;font-size:.78rem">{kursinhalt}</code>
+          </small>
+          <div class="content-field"><label>Betreff</label><input type="text" data-ck="newsletter_betreff" placeholder="Neuer Kurs: {kursname}"></div>
+          <div class="content-field"><label>E-Mail-Text</label><textarea data-ck="newsletter_body" style="min-height:200px;font-size:.83rem"></textarea></div>
         </div>
         <button class="btn btn-primary" onclick="saveContentPage('buchung')">Buchungs-Texte speichern →</button>
       </div>
@@ -863,6 +884,7 @@ input[type=file]{padding:.5rem;background:var(--cream);cursor:pointer}
       <span class="cb-label">Ich möchte per E-Mail informiert werden, wenn neue Kurse verfügbar sind</span>
     </label>
     <div class="bm-info-boxes">
+      <div class="bm-info-box"><strong id="bm-hinweise-title">Hinweise zum Kurs</strong><span id="bm-hinweise-text"></span></div>
       <div class="bm-info-box"><strong id="bm-haftung-title">Haftungsausschluss</strong><span id="bm-haftung-text"></span></div>
       <div class="bm-info-box"><strong id="bm-kosten-title">Kosten</strong><span id="bm-kosten-text"></span></div>
     </div>
@@ -926,8 +948,11 @@ const CT = {
   privat_at3:   { id:'ct-privat-at3',   type:'text' },
   privat_ax3:   { id:'ct-privat-ax3',   type:'text' },
   kontakt_intro:    { id:'ct-kontakt-intro',   type:'text' },
-  buchung_haftung:  { id:'bm-haftung-text',    type:'text' },
-  buchung_kosten:   { id:'bm-kosten-text',     type:'text' },
+  buchung_hinweise:   { id:'bm-hinweise-text',  type:'text' },
+  buchung_haftung:    { id:'bm-haftung-text',   type:'text' },
+  buchung_kosten:     { id:'bm-kosten-text',    type:'text' },
+  newsletter_betreff: { id:'_nl-betreff',        type:'none' },
+  newsletter_body:    { id:'_nl-body',           type:'none' },
   about_portrait:   { id:'about-portrait-wrap', type:'portrait' },
   impressum_text:  { id:'ct-impressum',    type:'md' },
   datenschutz_text:{ id:'ct-datenschutz',  type:'md' },
@@ -940,7 +965,7 @@ const PAGE_KEYS = {
   about:       ['about_portrait','about_bio','about_qual','about_phil'],
   privat:      ['privat_intro','privat_at1','privat_ax1','privat_at2','privat_ax2','privat_at3','privat_ax3'],
   kontakt:     ['kontakt_intro'],
-  buchung:     ['buchung_haftung','buchung_kosten'],
+  buchung:     ['buchung_hinweise','buchung_haftung','buchung_kosten','newsletter_betreff','newsletter_body'],
   impressum:   ['impressum_text'],
   datenschutz: ['datenschutz_text'],
 };
@@ -1071,6 +1096,7 @@ function applyContent(content) {
         el.innerHTML = `<img src="${esc(fixDriveUrl(val))}" alt="Laura Demory">`;
       }
     }
+    // type:'none' → nur im sessionStorage gecacht, kein DOM-Rendering
   });
 }
 
@@ -1172,7 +1198,8 @@ async function loadKurse() {
   try {
     const data = await appsGet({ action:'get', sheet:'Kurse' });
     spin.style.display = 'none';
-    const rows = (data.values||[]).slice(1).filter(r => r[0]);
+    const rows = (data.values||[]).slice(1).filter(r => r[0])
+      .sort((a,b) => new Date(b[1]||0) - new Date(a[1]||0));
     if (!rows.length) { empty.style.display='block'; kurseLoaded=true; return; }
     grid.style.display = 'grid';
     rows.forEach(row => {
@@ -1446,6 +1473,8 @@ function openKursBuchung(name, datum, uhrzeit, ort) {
   document.querySelectorAll('#buchung-modal .checkbox-custom').forEach(b => b.classList.remove('checked'));
   // Infoboxen aus Content-Cache befüllen (mit Fallback-Dummy-Text)
   const cc = JSON.parse(sessionStorage.getItem('rp_content') || '{}');
+  document.getElementById('bm-hinweise-text').textContent =
+    cc['buchung_hinweise'] || 'Bitte bring festes Schuhwerk und wetterfeste Kleidung mit. Wasser und ein kleiner Snack sind empfehlenswert. Bei extremen Wetterbedingungen behalte ich mir vor, den Kurs zu verschieben – ich melde mich dann rechtzeitig.';
   document.getElementById('bm-haftung-text').textContent =
     cc['buchung_haftung'] || 'Die Teilnahme erfolgt auf eigene Verantwortung. Laura Demory haftet nicht für Schäden, die durch mangelnde Fitness, Vorerkrankungen oder Unachtsamkeit entstehen. Bitte informiere mich vorab über gesundheitliche Einschränkungen.';
   document.getElementById('bm-kosten-text').textContent =
