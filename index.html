@@ -1199,7 +1199,7 @@ async function loadKurse() {
     const data = await appsGet({ action:'get', sheet:'Kurse' });
     spin.style.display = 'none';
     const rows = (data.values||[]).slice(1).filter(r => r[0])
-      .sort((a,b) => new Date(b[1]||0) - new Date(a[1]||0));
+      .sort((a,b) => new Date(a[1]||0) - new Date(b[1]||0));
     if (!rows.length) { empty.style.display='block'; kurseLoaded=true; return; }
     grid.style.display = 'grid';
     rows.forEach(row => {
